@@ -1,17 +1,17 @@
-# ☕️ SipLocal
+# SipLocal
 
 SipLocal offers a user-friendly and community-driven way to discover coffee shops and cafés that reflect the culture in your local area.  
 The goal is to give users an easily accessible and aesthetic way to explore local cafés without the clutter.
 
 ---
 
-## 📘 Project Overview
+## Project Overview
 This project is for the **CSCI 3340 Final Project**.  
 We are building it using Agile methods and following the full software development process.
 
 ---
 
-## 🎯 Goals
+## Goals
 - Show cafés based on user location within a certain radius  
 - Display photos, hours, ratings, and short summaries  
 - Keep the interface simple and mobile friendly  
@@ -20,10 +20,10 @@ We are building it using Agile methods and following the full software developme
 
 ---
 
-## 🤖 AI & Data Summary
+## AI & Data Summary
 SipLocal uses simple AI tools to summarize and rank local cafés based on real data.
 
-### 🔍 How It Works
+### How It Works
 1. **Data Collection**
    - Collect café information from official websites and public Google results  
    - Includes details like name, hours of operation, about text, and review snippets  
@@ -38,7 +38,7 @@ SipLocal uses simple AI tools to summarize and rank local cafés based on real d
 
 ---
 
-## 💡 Why It’s Different
+## Why It’s Different
 Unlike Google or Yelp, SipLocal:
 - Focuses on *independent cafés* only  
 - Summarizes reviews instead of showing long text  
@@ -47,7 +47,7 @@ Unlike Google or Yelp, SipLocal:
 
 ---
 
-## 🧩 Main Features
+## Main Features
 - Café list view (with distance, photo, and rating)  
 - Café detail view (about, hours, highlights, summary)  
 - Location detection and radius search  
@@ -55,7 +55,7 @@ Unlike Google or Yelp, SipLocal:
 
 ---
 
-## 🔄 Agile Plan
+## Agile Plan
 *(Tentative)*
 
 | Sprint | Dates | Focus |
@@ -66,7 +66,7 @@ Unlike Google or Yelp, SipLocal:
 
 ---
 
-## 👥 Team Roles
+## Team Roles
 | Name | Role |
 |------|------|
 | Bethany Tijerina | TBD |
@@ -74,13 +74,13 @@ Unlike Google or Yelp, SipLocal:
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 **TBD (to be decided by the team)**  
 Possible options: React, Next.js, Node.js, Express, PostgreSQL, Supabase, Tailwind, etc.
 
 ---
 
-## ⚙️ Setup
+## Setup
 ```bash
 # Clone the repo
 git clone https://github.com/<your-org>/SipLocal.git
