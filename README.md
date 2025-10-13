@@ -30,7 +30,7 @@ SipLocal uses simple AI tools to summarize and rank local cafés based on real d
 
 2. **AI Summarization**
    - AI or text analysis tools create short summaries from review text  
-   - Example: “☕ Cozy vibe, great espresso, quiet for studying.”
+   - Example: “Cozy vibe, great espresso, space for studying.”
 
 3. **Ranking System**
    - Rank cafés by rating, sentiment from reviews, and popularity (views)  
