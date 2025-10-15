@@ -16,7 +16,7 @@ We are building it using Agile methods and following the full software developme
 - Display photos, hours, ratings, and short summaries  
 - Keep the interface simple and mobile friendly  
 - Use CRUD operations for café data (create, read, update, delete)  
-- Build a working prototype by the second project deadline  
+- Build a working prototype by the second project deadline
 
 ---
 
@@ -71,6 +71,7 @@ Unlike Google or Yelp, SipLocal:
 |------|------|
 | Bethany Tijerina | TBD |
 | Angelo Modesto | TBD |
+| Tamara Pena | TBD |
 
 ---
 
