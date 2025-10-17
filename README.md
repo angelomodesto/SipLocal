@@ -11,6 +11,12 @@ We are building it using Agile methods and following the full software developme
 
 ---
 
+## Important Links
+Repository Link: https://github.com/angelomodesto/SipLocal.git
+Repo link: http://localhost:3000/
+
+---
+
 ## Goals
 - Show cafés based on user location within a certain radius  
 - Display photos, hours, ratings, and short summaries  
@@ -83,8 +89,6 @@ Possible options: React, Next.js, Node.js, Express, PostgreSQL, Supabase, Tailwi
 
 ## Setup
 ```bash
-https://github.com/angelomodesto/SipLocal.git
-http://localhost:3000/
 # Clone the repo
 git clone https://github.com/<your-org>/SipLocal.git
 cd SipLocal
