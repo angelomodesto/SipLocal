@@ -83,6 +83,8 @@ Possible options: React, Next.js, Node.js, Express, PostgreSQL, Supabase, Tailwi
 
 ## Setup
 ```bash
+https://github.com/angelomodesto/SipLocal.git
+http://localhost:3000/
 # Clone the repo
 git clone https://github.com/<your-org>/SipLocal.git
 cd SipLocal
