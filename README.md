@@ -11,13 +11,6 @@ We are building it using Agile methods and following the full software developme
 
 ---
 
-## Important Links
-Repository Link: https://github.com/angelomodesto/SipLocal.git
-
-Repo link: http://localhost:3000/
-
----
-
 ## Goals
 - Show cafés based on user location within a certain radius  
 - Display photos, hours, ratings, and short summaries  
@@ -85,6 +78,15 @@ Unlike Google or Yelp, SipLocal:
 ## Tech Stack
 **TBD (to be decided by the team)**  
 Possible options: React, Next.js, Node.js, Express, PostgreSQL, Supabase, Tailwind, etc.
+
+---
+
+## Important Links
+- **GitHub Repository:** [https://github.com/angelomodesto/SipLocal](https://github.com/angelomodesto/SipLocal)
+- **Local Development URL (for running the app):** `http://localhost:3000/`
+
+> Note: The app runs locally on this URL after running `npm run dev` in a Next.js environment.  
+> This link will not work for others unless deployed online.
 
 ---
 
