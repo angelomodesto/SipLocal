@@ -6,7 +6,7 @@ The goal is to give users an easily accessible and aesthetic way to explore loca
 ---
 
 ## Project Overview
-This project is for the **CSCI 3340 Final Project**.  
+This project is for the **CSCI 3340 Final Project**.
 We are building it using Agile methods and following the full software development process.
 
 ---
@@ -24,17 +24,18 @@ We are building it using Agile methods and following the full software developme
 SipLocal uses simple AI tools to summarize and rank local cafés based on real data.
 
 ### How It Works
-1. **Data Collection**
-   - Collect café information from official websites and public Google results  
-   - Includes details like name, hours of operation, about text, and review snippets  
+1. **Data Collection (via Yelp API)**
+   - The app uses Yelp’s public Fusion API to gather local café data, including name,       rating, category, address, and images.  
+   - This data is collected once through a setup script and stored locally as seed          data for development — ensuring the prototype works offline and without live API       calls.  
 
 2. **AI Summarization**
    - AI or text analysis tools create short summaries from review text  
    - Example: “Cozy vibe, great espresso, space for studying.”
+   - (llm model is tentative)
 
 3. **Ranking System**
-   - Rank cafés by rating, sentiment from reviews, and popularity (views)  
-   - Produces a “SipLocal Score” showing top cafés nearby  
+   - Cafés are ranked using a custom “SipLocal Score” that combines Yelp ratings,           review sentiment, and local popularity metrics (like views or favorites). 
+   - The ranking updates dynamically within the app as users interact — helping             surface the most loved local spots for students and coffee lovers alike.
 
 ---
 
@@ -42,7 +43,6 @@ SipLocal uses simple AI tools to summarize and rank local cafés based on real d
 Unlike Google or Yelp, SipLocal:
 - Focuses on *independent cafés* only  
 - Summarizes reviews instead of showing long text  
-- Removes ads and clutter  
 - Highlights the overall *vibe* of each place  
 
 ---
@@ -57,6 +57,7 @@ Unlike Google or Yelp, SipLocal:
 
 ## Agile Plan
 *(Tentative)*
+*(Features still need to be finalized and divided into sprints)*
 
 | Sprint | Dates | Focus |
 |--------|--------|--------|
@@ -77,7 +78,7 @@ Unlike Google or Yelp, SipLocal:
 
 ## Tech Stack
 **TBD (to be decided by the team)**  
-Possible options: React, Next.js, Node.js, Express, PostgreSQL, Supabase, Tailwind, etc.
+Next.js, TypeScript, Tailwind, Supabase
 
 ---
 
