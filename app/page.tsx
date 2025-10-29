@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link"; 
 
 export default function Home() {
   return (
@@ -24,6 +25,13 @@ export default function Home() {
             Save and see your changes instantly.
           </li>
         </ol>
+
+        <Link
+          href="/cafes"
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          View Local Cafés
+        </Link>
 
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <a

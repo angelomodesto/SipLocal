@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "name": "Bean Haven",
+        "rating": 4.7,
+        "image": "https://placehold.co/300x200",
+        "summary": "Cozy spot with good espresson and chill study vibes."
+    },
+    {
+        "id": 2,
+        "name": "Sovereign",
+        "rating": 4.5,
+        "image": "https://placehold.co/300x200",
+        "summary": "Friendly staff and good coffee"
+    }
+]
