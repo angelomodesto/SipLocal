@@ -1,0 +1,273 @@
+0 verbose cli /opt/homebrew/Cellar/node/24.10.0/bin/node /opt/homebrew/bin/npm
+1 info using npm@11.6.2
+2 info using node@v24.10.0
+3 silly config load:file:/opt/homebrew/lib/node_modules/npm/npmrc
+4 silly config load:file:/Users/angelomodesto/Desktop/CSCI3340/siplocal/.npmrc
+5 silly config load:file:/Users/angelomodesto/.npmrc
+6 silly config load:file:/opt/homebrew/etc/npmrc
+7 verbose title npm i @supabase/supabase-js
+8 verbose argv "i" "@supabase/supabase-js" "--cache" ".npm-cache"
+9 verbose logfile logs-max:10 dir:/Users/angelomodesto/Desktop/CSCI3340/siplocal/.npm-cache/_logs/2025-10-29T18_49_14_046Z-
+10 verbose logfile /Users/angelomodesto/Desktop/CSCI3340/siplocal/.npm-cache/_logs/2025-10-29T18_49_14_046Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+13 silly idealTree buildDeps
+14 silly fetch manifest @supabase/supabase-js@*
+15 silly packumentCache full:https://registry.npmjs.org/@supabase%2fsupabase-js cache-miss
+16 verbose shrinkwrap failed to load node_modules/.package-lock.json missing from node_modules: node_modules/@biomejs/cli-darwin-x64
+17 http fetch GET 200 https://registry.npmjs.org/@supabase%2fsupabase-js 249ms (cache miss)
+18 silly packumentCache full:https://registry.npmjs.org/@supabase%2fsupabase-js set size:undefined disposed:false
+19 silly placeDep ROOT @supabase/supabase-js@2.77.0 OK for: siplocal@0.1.0 want: *
+20 silly fetch manifest @supabase/auth-js@2.77.0
+21 silly packumentCache full:https://registry.npmjs.org/@supabase%2fauth-js cache-miss
+22 silly fetch manifest @supabase/node-fetch@2.6.15
+23 silly packumentCache full:https://registry.npmjs.org/@supabase%2fnode-fetch cache-miss
+24 silly fetch manifest @supabase/storage-js@2.77.0
+25 silly packumentCache full:https://registry.npmjs.org/@supabase%2fstorage-js cache-miss
+26 silly fetch manifest @supabase/realtime-js@2.77.0
+27 silly packumentCache full:https://registry.npmjs.org/@supabase%2frealtime-js cache-miss
+28 silly fetch manifest @supabase/functions-js@2.77.0
+29 silly packumentCache full:https://registry.npmjs.org/@supabase%2ffunctions-js cache-miss
+30 silly fetch manifest @supabase/postgrest-js@2.77.0
+31 silly packumentCache full:https://registry.npmjs.org/@supabase%2fpostgrest-js cache-miss
+32 http fetch GET 200 https://registry.npmjs.org/npm 291ms
+33 http fetch GET 200 https://registry.npmjs.org/@supabase%2fauth-js 112ms (cache miss)
+34 silly packumentCache full:https://registry.npmjs.org/@supabase%2fauth-js set size:undefined disposed:false
+35 http fetch GET 200 https://registry.npmjs.org/@supabase%2fstorage-js 165ms (cache miss)
+36 silly packumentCache full:https://registry.npmjs.org/@supabase%2fstorage-js set size:undefined disposed:false
+37 http fetch GET 200 https://registry.npmjs.org/@supabase%2frealtime-js 193ms (cache miss)
+38 silly packumentCache full:https://registry.npmjs.org/@supabase%2frealtime-js set size:undefined disposed:false
+39 http fetch GET 200 https://registry.npmjs.org/@supabase%2ffunctions-js 225ms (cache miss)
+40 silly packumentCache full:https://registry.npmjs.org/@supabase%2ffunctions-js set size:undefined disposed:false
+41 http fetch GET 200 https://registry.npmjs.org/@supabase%2fpostgrest-js 236ms (cache miss)
+42 silly packumentCache full:https://registry.npmjs.org/@supabase%2fpostgrest-js set size:undefined disposed:false
+43 http fetch GET 200 https://registry.npmjs.org/@supabase%2fnode-fetch 254ms (cache miss)
+44 silly packumentCache full:https://registry.npmjs.org/@supabase%2fnode-fetch set size:undefined disposed:false
+45 silly placeDep ROOT @supabase/auth-js@2.77.0 OK for: @supabase/supabase-js@2.77.0 want: 2.77.0
+46 silly placeDep ROOT @supabase/functions-js@2.77.0 OK for: @supabase/supabase-js@2.77.0 want: 2.77.0
+47 silly placeDep ROOT @supabase/node-fetch@2.6.15 OK for: @supabase/supabase-js@2.77.0 want: 2.6.15
+48 silly placeDep ROOT @supabase/postgrest-js@2.77.0 OK for: @supabase/supabase-js@2.77.0 want: 2.77.0
+49 silly placeDep ROOT @supabase/realtime-js@2.77.0 OK for: @supabase/supabase-js@2.77.0 want: 2.77.0
+50 silly placeDep ROOT @supabase/storage-js@2.77.0 OK for: @supabase/supabase-js@2.77.0 want: 2.77.0
+51 silly fetch manifest whatwg-url@^5.0.0
+52 silly packumentCache full:https://registry.npmjs.org/whatwg-url cache-miss
+53 silly fetch manifest ws@^8.18.2
+54 silly packumentCache full:https://registry.npmjs.org/ws cache-miss
+55 silly fetch manifest @types/ws@^8.18.1
+56 silly packumentCache full:https://registry.npmjs.org/@types%2fws cache-miss
+57 silly fetch manifest @types/phoenix@^1.6.6
+58 silly packumentCache full:https://registry.npmjs.org/@types%2fphoenix cache-miss
+59 http fetch GET 200 https://registry.npmjs.org/ws 55ms (cache miss)
+60 silly packumentCache full:https://registry.npmjs.org/ws set size:undefined disposed:false
+61 http fetch GET 200 https://registry.npmjs.org/whatwg-url 58ms (cache miss)
+62 silly packumentCache full:https://registry.npmjs.org/whatwg-url set size:undefined disposed:false
+63 http fetch GET 200 https://registry.npmjs.org/@types%2fws 66ms (cache miss)
+64 silly packumentCache full:https://registry.npmjs.org/@types%2fws set size:undefined disposed:false
+65 http fetch GET 200 https://registry.npmjs.org/@types%2fphoenix 75ms (cache miss)
+66 silly packumentCache full:https://registry.npmjs.org/@types%2fphoenix set size:undefined disposed:false
+67 silly placeDep ROOT whatwg-url@5.0.0 OK for: @supabase/node-fetch@2.6.15 want: ^5.0.0
+68 silly fetch manifest tr46@~0.0.3
+69 silly packumentCache full:https://registry.npmjs.org/tr46 cache-miss
+70 silly fetch manifest webidl-conversions@^3.0.0
+71 silly packumentCache full:https://registry.npmjs.org/webidl-conversions cache-miss
+72 http fetch GET 200 https://registry.npmjs.org/tr46 48ms (cache miss)
+73 silly packumentCache full:https://registry.npmjs.org/tr46 set size:undefined disposed:false
+74 http fetch GET 200 https://registry.npmjs.org/webidl-conversions 77ms (cache miss)
+75 silly packumentCache full:https://registry.npmjs.org/webidl-conversions set size:undefined disposed:false
+76 silly fetch manifest bufferutil@^4.0.1
+77 silly packumentCache full:https://registry.npmjs.org/bufferutil cache-miss
+78 http fetch GET 200 https://registry.npmjs.org/bufferutil 58ms (cache miss)
+79 silly packumentCache full:https://registry.npmjs.org/bufferutil set size:undefined disposed:false
+80 silly fetch manifest utf-8-validate@>=5.0.2
+81 silly packumentCache full:https://registry.npmjs.org/utf-8-validate cache-miss
+82 http fetch GET 200 https://registry.npmjs.org/utf-8-validate 66ms (cache miss)
+83 silly packumentCache full:https://registry.npmjs.org/utf-8-validate set size:undefined disposed:false
+84 silly placeDep ROOT @types/phoenix@1.6.6 OK for: @supabase/realtime-js@2.77.0 want: ^1.6.6
+85 silly placeDep ROOT @types/ws@8.18.1 OK for: @supabase/realtime-js@2.77.0 want: ^8.18.1
+86 silly placeDep ROOT ws@8.18.3 OK for: @supabase/realtime-js@2.77.0 want: ^8.18.2
+87 silly placeDep ROOT tr46@0.0.3 OK for: whatwg-url@5.0.0 want: ~0.0.3
+88 silly placeDep ROOT webidl-conversions@3.0.1 OK for: whatwg-url@5.0.0 want: ^3.0.0
+89 silly reify moves {}
+90 silly audit bulk request {
+90 silly audit   '@alloc/quick-lru': [ '5.2.0' ],
+90 silly audit   '@biomejs/biome': [ '2.2.0' ],
+90 silly audit   '@biomejs/cli-darwin-arm64': [ '2.2.0' ],
+90 silly audit   '@biomejs/cli-darwin-x64': [ '2.2.0' ],
+90 silly audit   '@biomejs/cli-linux-arm64': [ '2.2.0' ],
+90 silly audit   '@biomejs/cli-linux-arm64-musl': [ '2.2.0' ],
+90 silly audit   '@biomejs/cli-linux-x64': [ '2.2.0' ],
+90 silly audit   '@biomejs/cli-linux-x64-musl': [ '2.2.0' ],
+90 silly audit   '@biomejs/cli-win32-arm64': [ '2.2.0' ],
+90 silly audit   '@biomejs/cli-win32-x64': [ '2.2.0' ],
+90 silly audit   '@emnapi/runtime': [ '1.5.0' ],
+90 silly audit   '@img/colour': [ '1.0.0' ],
+90 silly audit   '@img/sharp-darwin-arm64': [ '0.34.4' ],
+90 silly audit   '@img/sharp-darwin-x64': [ '0.34.4' ],
+90 silly audit   '@img/sharp-libvips-darwin-arm64': [ '1.2.3' ],
+90 silly audit   '@img/sharp-libvips-darwin-x64': [ '1.2.3' ],
+90 silly audit   '@img/sharp-libvips-linux-arm': [ '1.2.3' ],
+90 silly audit   '@img/sharp-libvips-linux-arm64': [ '1.2.3' ],
+90 silly audit   '@img/sharp-libvips-linux-ppc64': [ '1.2.3' ],
+90 silly audit   '@img/sharp-libvips-linux-s390x': [ '1.2.3' ],
+90 silly audit   '@img/sharp-libvips-linux-x64': [ '1.2.3' ],
+90 silly audit   '@img/sharp-libvips-linuxmusl-arm64': [ '1.2.3' ],
+90 silly audit   '@img/sharp-libvips-linuxmusl-x64': [ '1.2.3' ],
+90 silly audit   '@img/sharp-linux-arm': [ '0.34.4' ],
+90 silly audit   '@img/sharp-linux-arm64': [ '0.34.4' ],
+90 silly audit   '@img/sharp-linux-ppc64': [ '0.34.4' ],
+90 silly audit   '@img/sharp-linux-s390x': [ '0.34.4' ],
+90 silly audit   '@img/sharp-linux-x64': [ '0.34.4' ],
+90 silly audit   '@img/sharp-linuxmusl-arm64': [ '0.34.4' ],
+90 silly audit   '@img/sharp-linuxmusl-x64': [ '0.34.4' ],
+90 silly audit   '@img/sharp-wasm32': [ '0.34.4' ],
+90 silly audit   '@img/sharp-win32-arm64': [ '0.34.4' ],
+90 silly audit   '@img/sharp-win32-ia32': [ '0.34.4' ],
+90 silly audit   '@img/sharp-win32-x64': [ '0.34.4' ],
+90 silly audit   '@isaacs/fs-minipass': [ '4.0.1' ],
+90 silly audit   '@jridgewell/gen-mapping': [ '0.3.13' ],
+90 silly audit   '@jridgewell/remapping': [ '2.3.5' ],
+90 silly audit   '@jridgewell/resolve-uri': [ '3.1.2' ],
+90 silly audit   '@jridgewell/sourcemap-codec': [ '1.5.5' ],
+90 silly audit   '@jridgewell/trace-mapping': [ '0.3.31' ],
+90 silly audit   '@next/env': [ '15.5.5' ],
+90 silly audit   '@next/swc-darwin-arm64': [ '15.5.5' ],
+90 silly audit   '@next/swc-darwin-x64': [ '15.5.5' ],
+90 silly audit   '@next/swc-linux-arm64-gnu': [ '15.5.5' ],
+90 silly audit   '@next/swc-linux-arm64-musl': [ '15.5.5' ],
+90 silly audit   '@next/swc-linux-x64-gnu': [ '15.5.5' ],
+90 silly audit   '@next/swc-linux-x64-musl': [ '15.5.5' ],
+90 silly audit   '@next/swc-win32-arm64-msvc': [ '15.5.5' ],
+90 silly audit   '@next/swc-win32-x64-msvc': [ '15.5.5' ],
+90 silly audit   '@swc/helpers': [ '0.5.15' ],
+90 silly audit   '@tailwindcss/node': [ '4.1.14' ],
+90 silly audit   '@tailwindcss/oxide': [ '4.1.14' ],
+90 silly audit   '@tailwindcss/oxide-android-arm64': [ '4.1.14' ],
+90 silly audit   '@tailwindcss/oxide-darwin-arm64': [ '4.1.14' ],
+90 silly audit   '@tailwindcss/oxide-darwin-x64': [ '4.1.14' ],
+90 silly audit   '@tailwindcss/oxide-freebsd-x64': [ '4.1.14' ],
+90 silly audit   '@tailwindcss/oxide-linux-arm-gnueabihf': [ '4.1.14' ],
+90 silly audit   '@tailwindcss/oxide-linux-arm64-gnu': [ '4.1.14' ],
+90 silly audit   '@tailwindcss/oxide-linux-arm64-musl': [ '4.1.14' ],
+90 silly audit   '@tailwindcss/oxide-linux-x64-gnu': [ '4.1.14' ],
+90 silly audit   '@tailwindcss/oxide-linux-x64-musl': [ '4.1.14' ],
+90 silly audit   '@tailwindcss/oxide-wasm32-wasi': [ '4.1.14' ],
+90 silly audit   '@tailwindcss/oxide-win32-arm64-msvc': [ '4.1.14' ],
+90 silly audit   '@tailwindcss/oxide-win32-x64-msvc': [ '4.1.14' ],
+90 silly audit   '@tailwindcss/postcss': [ '4.1.14' ],
+90 silly audit   '@types/node': [ '20.19.21' ],
+90 silly audit   '@types/react': [ '19.2.2' ],
+90 silly audit   '@types/react-dom': [ '19.2.2' ],
+90 silly audit   'caniuse-lite': [ '1.0.30001750' ],
+90 silly audit   chownr: [ '3.0.0' ],
+90 silly audit   'client-only': [ '0.0.1' ],
+90 silly audit   csstype: [ '3.1.3' ],
+90 silly audit   'detect-libc': [ '2.1.2' ],
+90 silly audit   'enhanced-resolve': [ '5.18.3' ],
+90 silly audit   'graceful-fs': [ '4.2.11' ],
+90 silly audit   jiti: [ '2.6.1' ],
+90 silly audit   lightningcss: [ '1.30.1' ],
+90 silly audit   'lightningcss-darwin-arm64': [ '1.30.1' ],
+90 silly audit   'lightningcss-darwin-x64': [ '1.30.1' ],
+90 silly audit   'lightningcss-freebsd-x64': [ '1.30.1' ],
+90 silly audit   'lightningcss-linux-arm-gnueabihf': [ '1.30.1' ],
+90 silly audit   'lightningcss-linux-arm64-gnu': [ '1.30.1' ],
+90 silly audit   'lightningcss-linux-arm64-musl': [ '1.30.1' ],
+90 silly audit   'lightningcss-linux-x64-gnu': [ '1.30.1' ],
+90 silly audit   'lightningcss-linux-x64-musl': [ '1.30.1' ],
+90 silly audit   'lightningcss-win32-arm64-msvc': [ '1.30.1' ],
+90 silly audit   'lightningcss-win32-x64-msvc': [ '1.30.1' ],
+90 silly audit   'magic-string': [ '0.30.19' ],
+90 silly audit   minipass: [ '7.1.2' ],
+90 silly audit   minizlib: [ '3.1.0' ],
+90 silly audit   nanoid: [ '3.3.11' ],
+90 silly audit   next: [ '15.5.5' ],
+90 silly audit   postcss: [ '8.4.31', '8.5.6' ],
+90 silly audit   picocolors: [ '1.1.1' ],
+90 silly audit   react: [ '19.1.0' ],
+90 silly audit   'react-dom': [ '19.1.0' ],
+90 silly audit   scheduler: [ '0.26.0' ],
+90 silly audit   semver: [ '7.7.3' ],
+90 silly audit   sharp: [ '0.34.4' ],
+90 silly audit   'source-map-js': [ '1.2.1' ],
+90 silly audit   'styled-jsx': [ '5.1.6' ],
+90 silly audit   tailwindcss: [ '4.1.14' ],
+90 silly audit   tapable: [ '2.3.0' ],
+90 silly audit   tar: [ '7.5.1' ],
+90 silly audit   tslib: [ '2.8.1' ],
+90 silly audit   typescript: [ '5.9.3' ],
+90 silly audit   'undici-types': [ '6.21.0' ],
+90 silly audit   yallist: [ '5.0.0' ],
+90 silly audit   '@supabase/supabase-js': [ '2.77.0' ],
+90 silly audit   '@supabase/auth-js': [ '2.77.0' ],
+90 silly audit   '@supabase/functions-js': [ '2.77.0' ],
+90 silly audit   '@supabase/node-fetch': [ '2.6.15' ],
+90 silly audit   '@supabase/postgrest-js': [ '2.77.0' ],
+90 silly audit   '@supabase/realtime-js': [ '2.77.0' ],
+90 silly audit   '@supabase/storage-js': [ '2.77.0' ],
+90 silly audit   'whatwg-url': [ '5.0.0' ],
+90 silly audit   '@types/phoenix': [ '1.6.6' ],
+90 silly audit   '@types/ws': [ '8.18.1' ],
+90 silly audit   ws: [ '8.18.3' ],
+90 silly audit   tr46: [ '0.0.3' ],
+90 silly audit   'webidl-conversions': [ '3.0.1' ]
+90 silly audit }
+91 http cache webidl-conversions@https://registry.npmjs.org/webidl-conversions/-/webidl-conversions-3.0.1.tgz 1ms (cache hit)
+92 http cache tr46@https://registry.npmjs.org/tr46/-/tr46-0.0.3.tgz 0ms (cache hit)
+93 http cache @types/ws@https://registry.npmjs.org/@types/ws/-/ws-8.18.1.tgz 0ms (cache hit)
+94 http cache ws@https://registry.npmjs.org/ws/-/ws-8.18.3.tgz 0ms (cache hit)
+95 http cache @types/phoenix@https://registry.npmjs.org/@types/phoenix/-/phoenix-1.6.6.tgz 0ms (cache hit)
+96 http cache whatwg-url@https://registry.npmjs.org/whatwg-url/-/whatwg-url-5.0.0.tgz 0ms (cache hit)
+97 http cache @supabase/storage-js@https://registry.npmjs.org/@supabase/storage-js/-/storage-js-2.77.0.tgz 0ms (cache hit)
+98 http cache @supabase/postgrest-js@https://registry.npmjs.org/@supabase/postgrest-js/-/postgrest-js-2.77.0.tgz 0ms (cache hit)
+99 http cache @supabase/realtime-js@https://registry.npmjs.org/@supabase/realtime-js/-/realtime-js-2.77.0.tgz 0ms (cache hit)
+100 http cache @supabase/functions-js@https://registry.npmjs.org/@supabase/functions-js/-/functions-js-2.77.0.tgz 0ms (cache hit)
+101 http cache @supabase/auth-js@https://registry.npmjs.org/@supabase/auth-js/-/auth-js-2.77.0.tgz 0ms (cache hit)
+102 http cache @supabase/supabase-js@https://registry.npmjs.org/@supabase/supabase-js/-/supabase-js-2.77.0.tgz 0ms (cache hit)
+103 http cache @supabase/node-fetch@https://registry.npmjs.org/@supabase/node-fetch/-/node-fetch-2.6.15.tgz 0ms (cache hit)
+104 silly tarball no local data for webidl-conversions@https://registry.npmjs.org/webidl-conversions/-/webidl-conversions-3.0.1.tgz. Extracting by manifest.
+105 silly tarball no local data for tr46@https://registry.npmjs.org/tr46/-/tr46-0.0.3.tgz. Extracting by manifest.
+106 silly tarball no local data for @types/ws@https://registry.npmjs.org/@types/ws/-/ws-8.18.1.tgz. Extracting by manifest.
+107 silly tarball no local data for ws@https://registry.npmjs.org/ws/-/ws-8.18.3.tgz. Extracting by manifest.
+108 silly tarball no local data for @types/phoenix@https://registry.npmjs.org/@types/phoenix/-/phoenix-1.6.6.tgz. Extracting by manifest.
+109 silly tarball no local data for whatwg-url@https://registry.npmjs.org/whatwg-url/-/whatwg-url-5.0.0.tgz. Extracting by manifest.
+110 silly tarball no local data for @supabase/storage-js@https://registry.npmjs.org/@supabase/storage-js/-/storage-js-2.77.0.tgz. Extracting by manifest.
+111 silly tarball no local data for @supabase/postgrest-js@https://registry.npmjs.org/@supabase/postgrest-js/-/postgrest-js-2.77.0.tgz. Extracting by manifest.
+112 silly tarball no local data for @supabase/realtime-js@https://registry.npmjs.org/@supabase/realtime-js/-/realtime-js-2.77.0.tgz. Extracting by manifest.
+113 silly tarball no local data for @supabase/functions-js@https://registry.npmjs.org/@supabase/functions-js/-/functions-js-2.77.0.tgz. Extracting by manifest.
+114 silly tarball no local data for @supabase/auth-js@https://registry.npmjs.org/@supabase/auth-js/-/auth-js-2.77.0.tgz. Extracting by manifest.
+115 silly tarball no local data for @supabase/supabase-js@https://registry.npmjs.org/@supabase/supabase-js/-/supabase-js-2.77.0.tgz. Extracting by manifest.
+116 silly tarball no local data for @supabase/node-fetch@https://registry.npmjs.org/@supabase/node-fetch/-/node-fetch-2.6.15.tgz. Extracting by manifest.
+117 http fetch GET 200 https://registry.npmjs.org/webidl-conversions/-/webidl-conversions-3.0.1.tgz 71ms (cache miss)
+118 http fetch GET 200 https://registry.npmjs.org/tr46/-/tr46-0.0.3.tgz 73ms (cache miss)
+119 http fetch GET 200 https://registry.npmjs.org/ws/-/ws-8.18.3.tgz 75ms (cache miss)
+120 http fetch GET 200 https://registry.npmjs.org/@types/phoenix/-/phoenix-1.6.6.tgz 90ms (cache miss)
+121 http fetch POST 200 https://registry.npmjs.org/-/npm/v1/security/advisories/bulk 130ms
+122 silly audit report {}
+123 http fetch GET 200 https://registry.npmjs.org/whatwg-url/-/whatwg-url-5.0.0.tgz 172ms (cache miss)
+124 http fetch GET 200 https://registry.npmjs.org/@supabase/node-fetch/-/node-fetch-2.6.15.tgz 175ms (cache miss)
+125 http fetch GET 200 https://registry.npmjs.org/@supabase/postgrest-js/-/postgrest-js-2.77.0.tgz 210ms (cache miss)
+126 http fetch GET 200 https://registry.npmjs.org/@supabase/functions-js/-/functions-js-2.77.0.tgz 213ms (cache miss)
+127 http fetch GET 200 https://registry.npmjs.org/@supabase/supabase-js/-/supabase-js-2.77.0.tgz 212ms (cache miss)
+128 http fetch GET 200 https://registry.npmjs.org/@supabase/storage-js/-/storage-js-2.77.0.tgz 252ms (cache miss)
+129 http fetch GET 200 https://registry.npmjs.org/@supabase/auth-js/-/auth-js-2.77.0.tgz 255ms (cache miss)
+130 http fetch GET 200 https://registry.npmjs.org/@types/ws/-/ws-8.18.1.tgz 323ms (cache miss)
+131 http fetch GET 200 https://registry.npmjs.org/@supabase/realtime-js/-/realtime-js-2.77.0.tgz 362ms (cache miss)
+132 silly ADD node_modules/webidl-conversions
+133 silly ADD node_modules/tr46
+134 silly ADD node_modules/ws
+135 silly ADD node_modules/@types/ws
+136 silly ADD node_modules/@types/phoenix
+137 silly ADD node_modules/whatwg-url
+138 silly ADD node_modules/@supabase/storage-js
+139 silly ADD node_modules/@supabase/realtime-js
+140 silly ADD node_modules/@supabase/postgrest-js
+141 silly ADD node_modules/@supabase/node-fetch
+142 silly ADD node_modules/@supabase/functions-js
+143 silly ADD node_modules/@supabase/auth-js
+144 silly ADD node_modules/@supabase/supabase-js
+145 verbose cwd /Users/angelomodesto/Desktop/CSCI3340/siplocal
+146 verbose os Darwin 24.6.0
+147 verbose node v24.10.0
+148 verbose npm  v11.6.2
+149 verbose exit 0
+150 info ok
