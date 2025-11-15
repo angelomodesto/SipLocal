@@ -36,12 +36,18 @@ export default function Header() {
 
           {/* User Menu */}
           <div className="flex items-center gap-4">
-            <button className="px-4 py-2 text-gray-700 hover:text-gray-900">
+            <Link
+              href="/auth/login"
+              className="px-4 py-2 text-gray-700 hover:text-gray-900 transition-colors"
+            >
               Sign In
-            </button>
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700">
+            </Link>
+            <Link
+              href="/auth/signup"
+              className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
+            >
               Sign Up
-            </button>
+            </Link>
           </div>
         </div>
       </div>
