@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import Filters from '@/components/Filters';
 import BusinessCard from '@/components/BusinessCard';
 import type { FilterState } from '@/components/Filters';
+import Link from 'next/link';
 
 // Mock data for wireframe implementation
 const mockBusinesses = [
@@ -110,6 +111,22 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
+      {/* ✨ Add Login/Signup Links Here */}
+      <div className="container mx-auto px-4 py-4 flex gap-4 justify-end">
+        <Link
+          href="/auth/login"
+          className="px-4 py-2 rounded-md bg-teal-600 text-white hover:bg-teal-700"
+        >
+          Login
+        </Link>
+        <Link
+          href="/auth/signup"
+          className="px-4 py-2 rounded-md bg-teal-600 text-white hover:bg-teal-700"
+        >
+          Sign Up
+        </Link>
+      </div>
+
       <Filters onFilterChange={handleFilterChange} />
 
       {/* Main Content */}
