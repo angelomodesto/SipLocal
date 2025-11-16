@@ -23,6 +23,7 @@ export function getSupabaseServerClient() {
 // Transform Yelp business to database format
 export function transformYelpBusinessToDb(yelpBusiness: YelpBusiness) {
   // Build photos array: include main image_url if exists, then add photos array
+  // Limit to max 10 photos total
   const photos: string[] = [];
   if (yelpBusiness.image_url) {
     photos.push(yelpBusiness.image_url);
@@ -30,11 +31,14 @@ export function transformYelpBusinessToDb(yelpBusiness: YelpBusiness) {
   if (yelpBusiness.photos && yelpBusiness.photos.length > 0) {
     // Add additional photos, avoiding duplicates
     for (const photo of yelpBusiness.photos) {
-      if (photo && !photos.includes(photo)) {
+      if (photo && !photos.includes(photo) && photos.length < 10) {
         photos.push(photo);
       }
     }
   }
+
+  // Ensure we don't exceed 10 photos
+  const finalPhotos = photos.slice(0, 10);
 
   return {
     id: yelpBusiness.id,
@@ -57,7 +61,8 @@ export function transformYelpBusinessToDb(yelpBusiness: YelpBusiness) {
     display_address: yelpBusiness.location.display_address.join(', '),
     phone: yelpBusiness.phone,
     display_phone: yelpBusiness.display_phone,
-    photos: photos.length > 0 ? photos : null, // Store as JSONB array, null if empty
+    photos: finalPhotos.length > 0 ? finalPhotos : null, // Store as JSONB array, null if empty, max 10
+    ai_summary: null, // Placeholder for future AI-generated summaries
   };
 }
 

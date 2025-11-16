@@ -81,7 +81,9 @@ export async function fetchAllYelpBusinesses(
   location: string,
   categories: string = 'coffee,cafes',
   maxResults: number = 200,
-  excludeClosed: boolean = true
+  excludeClosed: boolean = true,
+  minRating: number = 0,
+  requirePhotos: boolean = false
 ): Promise<YelpBusiness[]> {
   const allBusinesses: YelpBusiness[] = [];
   let offset = 0;
@@ -94,10 +96,23 @@ export async function fetchAllYelpBusinesses(
       break;
     }
 
+    // Apply filters
+    let businesses = response.businesses;
+    
     // Filter out permanently closed businesses if requested
-    const businesses = excludeClosed
-      ? response.businesses.filter((b) => !b.is_closed)
-      : response.businesses;
+    if (excludeClosed) {
+      businesses = businesses.filter((b) => !b.is_closed);
+    }
+    
+    // Filter by minimum rating
+    if (minRating > 0) {
+      businesses = businesses.filter((b) => b.rating >= minRating);
+    }
+    
+    // Filter businesses without photos if required
+    if (requirePhotos) {
+      businesses = businesses.filter((b) => b.image_url !== null && b.image_url !== undefined);
+    }
 
     allBusinesses.push(...businesses);
 
@@ -161,7 +176,7 @@ export async function getYelpBusinessDetails(businessId: string): Promise<YelpBu
     phone: business.phone || '',
     display_phone: business.display_phone || '',
     is_closed: business.is_closed || false,
-    photos: business.photos || [],
+    photos: (business.photos || []).slice(0, 10), // Limit to max 10 photos
   };
 }
 

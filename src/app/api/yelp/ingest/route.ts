@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { fetchAllYelpBusinesses, getYelpBusinessDetails } from '@/lib/yelpClient';
 import { getSupabaseServerClient, transformYelpBusinessToDb } from '@/lib/supabaseServer';
+import { filterChains } from '@/lib/chainFilter';
 
 // Initial test cities - Brownsville, Harlingen, Edinburg
 const TEST_CITIES = [
@@ -25,16 +26,19 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json().catch(() => ({}));
     const cities = body.cities || TEST_CITIES;
-    const maxResultsPerCity = body.maxResultsPerCity || 10;
+    const maxResultsPerCity = body.maxResultsPerCity || 20;
     const fetchPhotos = body.fetchPhotos !== false; // Default to true, can be disabled
+    const minRating = body.minRating ?? 3.0; // Minimum rating 3.0
+    const excludeChains = body.excludeChains !== false; // Default to true
 
     const supabase = getSupabaseServerClient();
     const allResults = {
       total: 0,
       processed: 0,
       skipped: 0,
+      filtered: 0, // Track filtered businesses (chains, no photos, etc.)
       errors: [] as string[],
-      cities: [] as Array<{ city: string; count: number; processed: number }>,
+      cities: [] as Array<{ city: string; count: number; processed: number; filtered: number }>,
     };
 
     // Process each city
@@ -42,23 +46,40 @@ export async function POST(request: NextRequest) {
       try {
         console.log(`Fetching businesses for ${city}...`);
         
-        // Fetch businesses, excluding permanently closed ones
+        // Fetch businesses with filters:
+        // - Exclude permanently closed
+        // - Minimum rating 3.0
+        // - Require photos
         const yelpBusinesses = await fetchAllYelpBusinesses(
           city,
           'coffee,cafes',
-          maxResultsPerCity,
-          true // excludeClosed = true
+          maxResultsPerCity * 2, // Fetch more to account for filtering
+          true, // excludeClosed = true
+          minRating, // minRating = 3.0
+          true // requirePhotos = true
         );
 
-        console.log(`Found ${yelpBusinesses.length} businesses in ${city} (excluding closed)`);
+        // Filter out chains if requested
+        const filteredBusinesses = excludeChains
+          ? filterChains(yelpBusinesses)
+          : yelpBusinesses;
+
+        // Limit to maxResultsPerCity after filtering
+        const businesses = filteredBusinesses.slice(0, maxResultsPerCity);
+        const filteredCount = filteredBusinesses.length - businesses.length;
+
+        console.log(
+          `Found ${yelpBusinesses.length} businesses in ${city}, ` +
+          `filtered to ${businesses.length} (removed ${yelpBusinesses.length - businesses.length})`
+        );
 
         let cityProcessed = 0;
         let citySkipped = 0;
 
         // Upsert each business
-        for (const yelpBusiness of yelpBusinesses) {
+        for (const yelpBusiness of businesses) {
           try {
-            // If we need photos, fetch business details
+            // Always fetch business details for photos (max 10 photos)
             let businessWithPhotos = yelpBusiness;
             if (fetchPhotos) {
               try {
@@ -68,8 +89,17 @@ export async function POST(request: NextRequest) {
                 await new Promise(resolve => setTimeout(resolve, 100));
               } catch (error) {
                 console.warn(`Could not fetch details for ${yelpBusiness.name}:`, error);
-                // Continue with basic data if details fetch fails
+                // Skip businesses where we can't get photos (since we require photos)
+                citySkipped++;
+                continue;
               }
+            }
+
+            // Final check: ensure business has photos before storing
+            if (!businessWithPhotos.image_url && (!businessWithPhotos.photos || businessWithPhotos.photos.length === 0)) {
+              console.log(`Skipping ${yelpBusiness.name} - no photos available`);
+              citySkipped++;
+              continue;
             }
 
             const dbRecord = transformYelpBusinessToDb(businessWithPhotos);
@@ -96,12 +126,14 @@ export async function POST(request: NextRequest) {
           }
         }
 
-        allResults.total += yelpBusinesses.length;
+        allResults.total += businesses.length;
         allResults.skipped += citySkipped;
+        allResults.filtered += filteredCount;
         allResults.cities.push({
           city,
-          count: yelpBusinesses.length,
+          count: businesses.length,
           processed: cityProcessed,
+          filtered: filteredCount,
         });
 
         // Small delay between cities to respect rate limits
@@ -137,9 +169,12 @@ export async function GET() {
     allCities: RGV_CITIES,
     defaults: {
       cities: TEST_CITIES,
-      maxResultsPerCity: 10,
+      maxResultsPerCity: 20,
       fetchPhotos: true,
       excludeClosed: true,
+      minRating: 3.0,
+      excludeChains: true,
+      requirePhotos: true,
     },
   });
 }
