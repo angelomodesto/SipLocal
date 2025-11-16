@@ -3,108 +3,57 @@
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 
-// Extended mock data - ready for API integration
-// This will be replaced with API call when database is connected
-const mockBusinesses = [
-  {
-    id: '1',
-    name: 'The Coffee House',
-    images: [null, null, null], // Placeholder for multiple images
-    rating: 4.5,
-    reviewCount: 52,
-    price: '$$',
-    categories: [{ alias: 'coffee', title: 'Coffee & Tea' }, { alias: 'cafes', title: 'Cafes' }],
-    city: 'McAllen',
-    state: 'TX',
-    address: '123 Main Street, McAllen, TX 78501',
-    phone: '(956) 555-0123',
-    aiSummary: 'A cozy neighborhood cafe known for its artisanal coffee and fresh pastries. Perfect for morning meetings or afternoon study sessions. The atmosphere is warm and inviting, with comfortable seating and excellent WiFi. They source their beans from local roasters and offer a variety of specialty drinks.',
-  },
-  {
-    id: '2',
-    name: 'Brew & Bite Cafe',
-    images: [null, null],
-    rating: 4.8,
-    reviewCount: 127,
-    price: '$',
-    categories: [{ alias: 'cafes', title: 'Cafes' }, { alias: 'breakfast', title: 'Breakfast & Brunch' }],
-    city: 'Brownsville',
-    state: 'TX',
-    address: '456 Commerce Boulevard, Brownsville, TX 78520',
-    phone: '(956) 555-0456',
-    aiSummary: 'Popular local spot serving excellent coffee and breakfast favorites. Known for friendly service and comfortable atmosphere. A favorite among locals for their hearty breakfast options and consistently great coffee.',
-  },
-  {
-    id: '3',
-    name: 'Cafe Del Rio',
-    images: [null],
-    rating: 4.2,
-    reviewCount: 89,
-    price: '$$',
-    categories: [{ alias: 'coffee', title: 'Coffee & Tea' }],
-    city: 'Edinburg',
-    state: 'TX',
-    address: '789 University Drive, Edinburg, TX 78539',
-    phone: '(956) 555-0789',
-    aiSummary: 'Modern cafe with a great selection of specialty coffees and light meals. Great WiFi and perfect for remote work. The space is bright and airy, with plenty of outlets for laptops.',
-  },
-  {
-    id: '4',
-    name: 'Morning Brew',
-    images: [null, null, null, null],
-    rating: 4.7,
-    reviewCount: 203,
-    price: '$$',
-    categories: [{ alias: 'coffee', title: 'Coffee & Tea' }, { alias: 'bakeries', title: 'Bakeries' }],
-    city: 'Harlingen',
-    state: 'TX',
-    address: '321 Business Park Way, Harlingen, TX 78550',
-    phone: '(956) 555-0321',
-    aiSummary: 'Top-rated coffee shop with exceptional pastries and a welcoming vibe. Consistently great coffee and service. Their baked goods are made fresh daily and are a local favorite.',
-  },
-  {
-    id: '5',
-    name: 'The Daily Grind',
-    images: [null, null],
-    rating: 4.0,
-    reviewCount: 45,
-    price: '$',
-    categories: [{ alias: 'coffee', title: 'Coffee & Tea' }],
-    city: 'Weslaco',
-    state: 'TX',
-    address: '654 Valley Road, Weslaco, TX 78596',
-    phone: '(956) 555-0654',
-    aiSummary: 'Local favorite for quality coffee at affordable prices. Simple and straightforward, no frills coffee experience. Great for a quick cup on the go.',
-  },
-  {
-    id: '6',
-    name: 'Artisan Coffee Co.',
-    images: [null, null, null],
-    rating: 4.9,
-    reviewCount: 312,
-    price: '$$$',
-    categories: [{ alias: 'coffee', title: 'Coffee & Tea' }, { alias: 'cafes', title: 'Cafes' }],
-    city: 'McAllen',
-    state: 'TX',
-    address: '987 Artisan Avenue, McAllen, TX 78501',
-    phone: '(956) 555-0987',
-    aiSummary: 'Premium coffee shop featuring expertly crafted beverages and artisanal treats. Known for latte art and high-quality beans. A must-visit for coffee connoisseurs in the area.',
-  },
-];
+type Business = {
+  id: string;
+  name: string;
+  photos: string[];
+  rating: number;
+  reviewCount: number;
+  price: string | null;
+  categories: Array<{ alias: string; title: string }>;
+  city: string;
+  state: string;
+  address?: string;
+  phone?: string;
+  aiSummary?: string | null;
+};
 
 export default function BusinessDetailPage() {
   const params = useParams();
   const businessId = params?.id as string;
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [business, setBusiness] = useState<Business | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Find business by ID - this will be replaced with API call
-  const business = mockBusinesses.find((b) => b.id === businessId);
+  useEffect(() => {
+    const fetchBusiness = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(`/api/businesses/${businessId}`, { cache: 'no-store' });
+        const json = await res.json();
+        if (!json.success) {
+          setError(json.error || 'Business not found');
+          setBusiness(null);
+        } else {
+          setBusiness(json.business as Business);
+        }
+      } catch (e) {
+        setError(e instanceof Error ? e.message : 'Unknown error');
+        setBusiness(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (businessId) fetchBusiness();
+  }, [businessId]);
 
   // If business not found, show 404
-  if (!business) {
+  if (!loading && (!business || error)) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
@@ -119,6 +68,17 @@ export default function BusinessDetailPage() {
               Back to Home
             </Link>
           </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (loading || !business) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <main className="container mx-auto px-4 py-16">
+          <p className="text-gray-600">Loading business...</p>
         </main>
       </div>
     );
@@ -217,9 +177,9 @@ export default function BusinessDetailPage() {
             <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
               {/* Main Image */}
               <div className="relative w-full h-96 bg-gray-200 overflow-hidden">
-                {business.images && business.images[selectedImageIndex] ? (
+                {business.photos && business.photos[selectedImageIndex] ? (
                   <Image
-                    src={business.images[selectedImageIndex]}
+                    src={business.photos[selectedImageIndex]}
                     alt={business.name}
                     fill
                     className="object-cover"
@@ -245,9 +205,9 @@ export default function BusinessDetailPage() {
               </div>
 
               {/* Thumbnail Grid */}
-              {business.images && business.images.length > 1 && (
+              {business.photos && business.photos.length > 1 && (
                 <div className="grid grid-cols-4 gap-2 p-4 bg-gray-50">
-                  {business.images.map((image, index) => (
+                  {business.photos.map((image, index) => (
                     <button
                       key={index}
                       onClick={() => setSelectedImageIndex(index)}
