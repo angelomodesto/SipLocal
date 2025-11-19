@@ -49,7 +49,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ background: 'var(--background-warm)' }}>
       <Header />
       <Filters onFilterChange={handleFilterChange} />
 
@@ -57,18 +57,20 @@ export default function Home() {
       <main className="container mx-auto px-4 py-8">
         {/* Results Count */}
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">
+          <h2 className="text-2xl font-bold" style={{ color: 'var(--color-text-primary)' }}>
             {filteredBusinesses.length} Coffee Shops & Cafes
           </h2>
-          <p className="text-gray-600 mt-1">Find the perfect spot for your next cup</p>
+          <p className="mt-1" style={{ color: 'var(--color-text-secondary)' }}>Find the perfect spot for your next cup</p>
         </div>
 
         {/* Loading/Error */}
         {loading && (
-          <div className="text-gray-600 mb-6">Loading businesses...</div>
+          <div className="mb-6" style={{ color: 'var(--color-text-secondary)' }}>Loading businesses...</div>
         )}
         {error && (
-          <div className="mb-6 text-red-700">Error: {error}</div>
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl" style={{ color: '#dc2626' }}>
+            Error: {error}
+          </div>
         )}
 
         {/* Business Cards Grid */}
@@ -81,16 +83,16 @@ export default function Home() {
         {/* Empty State */}
         {!loading && !error && filteredBusinesses.length === 0 && (
           <div className="text-center py-16">
-            <p className="text-gray-500 text-lg">No businesses found matching your filters.</p>
-            <p className="text-gray-400 mt-2">Try adjusting your search criteria.</p>
+            <p className="text-lg" style={{ color: 'var(--color-text-secondary)' }}>No businesses found matching your filters.</p>
+            <p className="mt-2" style={{ color: 'var(--color-muted)' }}>Try adjusting your search criteria.</p>
           </div>
         )}
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-16">
+      <footer className="bg-white border-t border-[var(--color-border-warm)] mt-16">
         <div className="container mx-auto px-4 py-8">
-          <div className="text-center text-gray-600">
+          <div className="text-center" style={{ color: 'var(--color-text-secondary)' }}>
             <p>&copy; 2024 SipLocal. All rights reserved.</p>
           </div>
         </div>

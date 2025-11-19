@@ -2,11 +2,11 @@ import Link from 'next/link';
 
 export default function Header() {
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <header className="bg-white border-b border-[var(--color-border-warm)] sticky top-0 z-50 shadow-sm">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="text-2xl font-bold text-gray-900">
+          {/* Logo - Using display font (Righteous) with Merlot color */}
+          <Link href="/" className="text-2xl font-display" style={{ color: 'var(--color-primary-dark)' }}>
             SipLocal
           </Link>
 
@@ -16,10 +16,15 @@ export default function Header() {
               <input
                 type="text"
                 placeholder="Search coffee shops, cafes..."
-                className="w-full px-4 py-2 pl-10 pr-4 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2.5 pl-10 pr-4 border rounded-full focus:outline-none focus:ring-2 focus:border-[var(--color-primary)] transition-[var(--transition-base)] bg-white/80 backdrop-blur-sm"
+                style={{ 
+                  color: 'var(--color-text-primary)',
+                  borderColor: 'var(--color-border-muted)',
+                }}
               />
               <svg
-                className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
+                className="absolute left-3 top-2.5 h-5 w-5"
+                style={{ color: 'var(--color-muted)' }}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -35,16 +40,16 @@ export default function Header() {
           </div>
 
           {/* User Menu */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <Link
               href="/auth/login"
-              className="px-4 py-2 text-gray-700 hover:text-gray-900 transition-colors"
+              className="px-4 py-2 text-[var(--color-muted)] hover:text-[var(--color-primary-dark)] transition-[var(--transition-base)] font-medium"
             >
               Sign In
             </Link>
             <Link
               href="/auth/signup"
-              className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
+              className="px-5 py-2 bg-[var(--color-primary)] text-white rounded-full hover:bg-[var(--color-primary-dark)] transition-[var(--transition-base)] font-medium shadow-sm hover:shadow-md"
             >
               Sign Up
             </Link>

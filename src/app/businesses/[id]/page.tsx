@@ -31,39 +31,47 @@ export default function BusinessDetailPage() {
 
   useEffect(() => {
     const fetchBusiness = async () => {
+      if (!businessId) {
+        setError('Business ID is missing');
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`/api/businesses/${businessId}`, { cache: 'no-store' });
+        const res = await fetch(`/api/businesses/${encodeURIComponent(businessId)}`, { cache: 'no-store' });
         const json = await res.json();
         if (!json.success) {
+          console.error('API error:', json.error, 'for ID:', businessId);
           setError(json.error || 'Business not found');
           setBusiness(null);
         } else {
           setBusiness(json.business as Business);
         }
       } catch (e) {
+        console.error('Fetch error:', e);
         setError(e instanceof Error ? e.message : 'Unknown error');
         setBusiness(null);
       } finally {
         setLoading(false);
       }
     };
-    if (businessId) fetchBusiness();
+    fetchBusiness();
   }, [businessId]);
 
   // If business not found, show 404
   if (!loading && (!business || error)) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen" style={{ background: 'var(--background-warm)' }}>
         <Header />
         <main className="container mx-auto px-4 py-16">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">Business Not Found</h1>
-            <p className="text-gray-600 mb-8">The business you're looking for doesn't exist.</p>
+            <h1 className="text-3xl font-bold mb-4" style={{ color: 'var(--color-text-primary)' }}>Business Not Found</h1>
+            <p className="mb-8" style={{ color: 'var(--color-text-secondary)' }}>The business you're looking for doesn't exist.</p>
             <Link
               href="/"
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors inline-block"
+              className="px-6 py-3 bg-[var(--color-primary)] text-white rounded-xl hover:bg-[var(--color-primary-dark)] transition-[var(--transition-base)] inline-block font-medium shadow-sm hover:shadow-md"
             >
               Back to Home
             </Link>
@@ -75,10 +83,10 @@ export default function BusinessDetailPage() {
 
   if (loading || !business) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen" style={{ background: 'var(--background-warm)' }}>
         <Header />
         <main className="container mx-auto px-4 py-16">
-          <p className="text-gray-600">Loading business...</p>
+          <p style={{ color: 'var(--color-text-secondary)' }}>Loading business...</p>
         </main>
       </div>
     );
@@ -94,13 +102,13 @@ export default function BusinessDetailPage() {
     return (
       <div className="flex items-center gap-1">
         {Array.from({ length: fullStars }).map((_, i) => (
-          <span key={i} className={`text-yellow-400 ${starSize}`}>
+          <span key={i} className={starSize} style={{ color: 'var(--color-primary)' }}>
             ★
           </span>
         ))}
-        {hasHalfStar && <span className={`text-yellow-400 ${starSize}`}>☆</span>}
+        {hasHalfStar && <span className={starSize} style={{ color: 'var(--color-primary)' }}>☆</span>}
         {Array.from({ length: emptyStars }).map((_, i) => (
-          <span key={i} className={`text-gray-300 ${starSize}`}>
+          <span key={i} className={starSize} style={{ color: 'var(--color-border)' }}>
             ★
           </span>
         ))}
@@ -144,14 +152,17 @@ export default function BusinessDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ background: 'var(--background-warm)' }}>
       <Header />
 
       <main className="container mx-auto px-4 py-8">
         {/* Back Button */}
         <Link
           href="/"
-          className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-6 transition-colors"
+          className="inline-flex items-center mb-6 transition-[var(--transition-base)] font-medium"
+          style={{ color: 'var(--color-primary-dark)' }}
+          onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-primary)'}
+          onMouseLeave={(e) => e.currentTarget.style.color = 'var(--color-primary-dark)'}
         >
           <svg
             className="w-5 h-5 mr-2"
@@ -174,9 +185,9 @@ export default function BusinessDetailPage() {
           {/* Left Column - Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Image Gallery */}
-            <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-2xl border border-[var(--color-border-warm)] overflow-hidden shadow-md">
               {/* Main Image */}
-              <div className="relative w-full h-96 bg-gray-200 overflow-hidden">
+              <div className="relative w-full h-96 bg-[var(--color-surface)] overflow-hidden">
                 {business.photos && business.photos[selectedImageIndex] ? (
                   <Image
                     src={business.photos[selectedImageIndex]}
@@ -206,16 +217,34 @@ export default function BusinessDetailPage() {
 
               {/* Thumbnail Grid */}
               {business.photos && business.photos.length > 1 && (
-                <div className="grid grid-cols-4 gap-2 p-4 bg-gray-50">
+                <div className="grid grid-cols-4 gap-2 p-4" style={{ background: 'var(--background-warm)' }}>
                   {business.photos.map((image, index) => (
                     <button
                       key={index}
                       onClick={() => setSelectedImageIndex(index)}
-                      className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all ${
+                      className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-[var(--transition-base)] ${
                         selectedImageIndex === index
-                          ? 'border-blue-500 ring-2 ring-blue-200'
-                          : 'border-transparent hover:border-gray-300'
+                          ? 'ring-2'
+                          : 'border-transparent'
                       }`}
+                      style={{
+                        borderColor: selectedImageIndex === index ? 'var(--color-primary)' : 'transparent',
+                        boxShadow: selectedImageIndex === index ? 'var(--shadow-sm)' : 'none',
+                      }}
+                      onMouseEnter={(e) => {
+                        if (selectedImageIndex !== index) {
+                          e.currentTarget.style.borderColor = 'var(--color-border-muted)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (selectedImageIndex !== index) {
+                          e.currentTarget.style.borderColor = 'transparent';
+                        }
+                      }}
+                      style={{
+                        borderColor: selectedImageIndex === index ? 'var(--color-primary)' : 'transparent',
+                        boxShadow: selectedImageIndex === index ? 'var(--shadow-sm)' : 'none',
+                      }}
                     >
                       {image ? (
                         <Image
@@ -249,16 +278,16 @@ export default function BusinessDetailPage() {
             </div>
 
             {/* Business Name and Rating */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">{business.name}</h1>
+            <div className="bg-white rounded-2xl border border-[var(--color-border-warm)] p-6 shadow-md">
+              <h1 className="text-4xl font-bold mb-4" style={{ color: 'var(--color-text-primary)' }}>{business.name}</h1>
               
               <div className="flex flex-wrap items-center gap-4 mb-4">
                 {renderStars(business.rating, 'lg')}
-                <span className="text-xl text-gray-700">
+                <span className="text-xl" style={{ color: 'var(--color-text-secondary)' }}>
                   {business.rating.toFixed(1)} ({business.reviewCount} reviews)
                 </span>
                 {business.price && (
-                  <span className="text-xl font-medium text-gray-900">{business.price}</span>
+                  <span className="text-xl font-medium" style={{ color: 'var(--color-text-primary)' }}>{business.price}</span>
                 )}
               </div>
 
@@ -267,7 +296,8 @@ export default function BusinessDetailPage() {
                 {business.categories.map((category) => (
                   <span
                     key={category.alias}
-                    className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium"
+                    className="px-3 py-1.5 rounded-full text-sm font-medium"
+                    style={{ background: 'var(--color-surface)', color: 'var(--color-primary-dark)' }}
                   >
                     {category.title}
                   </span>
@@ -275,7 +305,7 @@ export default function BusinessDetailPage() {
               </div>
 
               {/* Location */}
-              <div className="text-gray-600">
+              <div style={{ color: 'var(--color-text-secondary)' }}>
                 <span className="inline-flex items-center">
                   <svg
                     className="w-5 h-5 mr-2"
@@ -302,17 +332,18 @@ export default function BusinessDetailPage() {
             </div>
 
             {/* AI Summary */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">About</h2>
-              <p className="text-gray-700 leading-relaxed text-lg">{business.aiSummary}</p>
+            <div className="bg-white rounded-2xl border border-[var(--color-border-warm)] p-6 shadow-md">
+              <h2 className="text-2xl font-semibold mb-4" style={{ color: 'var(--color-text-primary)' }}>About</h2>
+              <p className="leading-relaxed text-lg" style={{ color: 'var(--color-text-secondary)' }}>{business.aiSummary}</p>
             </div>
 
             {/* Reviews Placeholder */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Reviews</h2>
-              <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
+            <div className="bg-white rounded-2xl border border-[var(--color-border-warm)] p-6 shadow-md">
+              <h2 className="text-2xl font-semibold mb-4" style={{ color: 'var(--color-text-primary)' }}>Reviews</h2>
+              <div className="text-center py-12 border-2 border-dashed rounded-xl" style={{ borderColor: 'var(--color-border-warm)' }}>
                 <svg
-                  className="w-16 h-16 text-gray-400 mx-auto mb-4"
+                  className="w-16 h-16 mx-auto mb-4"
+                  style={{ color: 'var(--color-muted)' }}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -324,20 +355,20 @@ export default function BusinessDetailPage() {
                     d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
                   />
                 </svg>
-                <p className="text-gray-500 text-lg font-medium">Reviews Coming Soon</p>
-                <p className="text-gray-400 mt-2">Check back later for customer reviews and ratings</p>
+                <p className="text-lg font-medium" style={{ color: 'var(--color-text-secondary)' }}>Reviews Coming Soon</p>
+                <p className="mt-2" style={{ color: 'var(--color-muted)' }}>Check back later for customer reviews and ratings</p>
               </div>
             </div>
           </div>
 
           {/* Right Column - Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg border border-gray-200 p-6 sticky top-24 space-y-4">
+            <div className="bg-white rounded-2xl border border-[var(--color-border-warm)] p-6 sticky top-24 space-y-4 shadow-md">
               {/* Action Buttons */}
               <div className="space-y-3">
                 <button
                   onClick={handleGetDirections}
-                  className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                  className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[var(--color-primary)] text-white rounded-xl hover:bg-[var(--color-primary-dark)] transition-[var(--transition-base)] font-medium shadow-sm hover:shadow-md"
                 >
                   <svg
                     className="w-5 h-5"
@@ -358,7 +389,19 @@ export default function BusinessDetailPage() {
                 {business.phone && (
                   <button
                     onClick={handleCall}
-                    className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                    className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl transition-[var(--transition-base)] font-medium"
+                    style={{ 
+                      background: 'var(--color-surface)', 
+                      color: 'var(--color-text-primary)',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'var(--color-muted)';
+                      e.currentTarget.style.color = 'white';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'var(--color-surface)';
+                      e.currentTarget.style.color = 'var(--color-text-primary)';
+                    }}
                   >
                     <svg
                       className="w-5 h-5"
@@ -379,7 +422,19 @@ export default function BusinessDetailPage() {
 
                 <button
                   onClick={handleShare}
-                  className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                  className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl transition-[var(--transition-base)] font-medium"
+                  style={{ 
+                    background: 'var(--color-surface)', 
+                    color: 'var(--color-text-primary)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'var(--color-muted)';
+                    e.currentTarget.style.color = 'white';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'var(--color-surface)';
+                    e.currentTarget.style.color = 'var(--color-text-primary)';
+                  }}
                 >
                   <svg
                     className="w-5 h-5"
@@ -399,20 +454,32 @@ export default function BusinessDetailPage() {
               </div>
 
               {/* Divider */}
-              <div className="border-t border-gray-200 my-4"></div>
+              <div className="border-t my-4" style={{ borderColor: 'var(--color-border-warm)' }}></div>
 
               {/* Location Details */}
               <div className="space-y-3">
-                <h3 className="font-semibold text-gray-900">Location</h3>
+                <h3 className="font-semibold" style={{ color: 'var(--color-text-primary)' }}>Location</h3>
                 {business.address ? (
-                  <p className="text-gray-600 text-sm">{business.address}</p>
+                  <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>{business.address}</p>
                 ) : (
-                  <p className="text-gray-600 text-sm">{business.city}, {business.state}</p>
+                  <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>{business.city}, {business.state}</p>
                 )}
 
                 <button
                   onClick={handleGetDirections}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors text-sm font-medium"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 border rounded-xl hover:bg-[var(--color-surface)] transition-[var(--transition-base)] text-sm font-medium"
+                  style={{ 
+                    borderColor: 'var(--color-primary)', 
+                    color: 'var(--color-primary)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'var(--color-primary)';
+                    e.currentTarget.style.color = 'white';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = 'var(--color-primary)';
+                  }}
                 >
                   <svg
                     className="w-4 h-4"
@@ -432,13 +499,14 @@ export default function BusinessDetailPage() {
               </div>
 
               {/* Categories */}
-              <div className="border-t border-gray-200 pt-4">
-                <h3 className="font-semibold text-gray-900 mb-3">Categories</h3>
+              <div className="border-t pt-4" style={{ borderColor: 'var(--color-border-warm)' }}>
+                <h3 className="font-semibold mb-3" style={{ color: 'var(--color-text-primary)' }}>Categories</h3>
                 <div className="flex flex-wrap gap-2">
                   {business.categories.map((category) => (
                     <span
                       key={category.alias}
-                      className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
+                      className="px-3 py-1 rounded-full text-sm"
+                      style={{ background: 'var(--color-surface)', color: 'var(--color-muted)' }}
                     >
                       {category.title}
                     </span>

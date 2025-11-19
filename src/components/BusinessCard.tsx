@@ -35,13 +35,13 @@ export default function BusinessCard({
     return (
       <div className="flex items-center gap-1">
         {Array.from({ length: fullStars }).map((_, i) => (
-          <span key={i} className="text-yellow-400">
+          <span key={i} style={{ color: 'var(--color-primary)' }}>
             ★
           </span>
         ))}
-        {hasHalfStar && <span className="text-yellow-400">☆</span>}
+        {hasHalfStar && <span style={{ color: 'var(--color-primary)' }}>☆</span>}
         {Array.from({ length: emptyStars }).map((_, i) => (
-          <span key={i} className="text-gray-300">
+          <span key={i} style={{ color: 'var(--color-border)' }}>
             ★
           </span>
         ))}
@@ -53,22 +53,26 @@ export default function BusinessCard({
   const categoryTitles = categories.map((cat) => cat.title).join(', ');
 
   return (
-    <Link href={`/businesses/${id}`}>
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-200 cursor-pointer">
-        {/* Image Section */}
-        <div className="relative w-full h-48 bg-gray-200 overflow-hidden">
+    <Link href={`/businesses/${encodeURIComponent(id)}`} className="block">
+      <div className="group bg-white rounded-2xl border border-[var(--color-border-warm)] overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-[var(--transition-smooth)] cursor-pointer" style={{ boxShadow: 'var(--shadow-md)' }}>
+        {/* Image Section with Warm Overlay on Hover */}
+        <div className="relative w-full h-48 bg-[var(--color-surface)] overflow-hidden">
           {imageUrl ? (
-            <Image
-              src={imageUrl}
-              alt={name}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
+            <>
+              <Image
+                src={imageUrl}
+                alt={name}
+                fill
+                className="object-cover transition-[var(--transition-smooth)] group-hover:scale-105"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              />
+              {/* Subtle warm overlay on hover */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-primary-dark)]/20 to-transparent opacity-0 group-hover:opacity-100 transition-[var(--transition-smooth)] pointer-events-none" />
+            </>
           ) : (
-            <div className="absolute inset-0 flex items-center justify-center text-gray-400 bg-gray-100">
+            <div className="absolute inset-0 flex items-center justify-center" style={{ color: 'var(--color-muted)' }}>
               <svg
-                className="w-16 h-16 text-gray-300"
+                className="w-16 h-16 opacity-40"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -85,44 +89,44 @@ export default function BusinessCard({
         </div>
 
         {/* Business Info */}
-        <div className="p-4">
+        <div className="p-5">
           {/* Business Name */}
-          <h3 className="text-xl font-semibold text-gray-900 mb-2 line-clamp-1">
+          <h3 className="text-xl font-semibold mb-2 line-clamp-1" style={{ color: 'var(--color-text-primary)' }}>
             {name}
           </h3>
 
           {/* Rating and Review Count */}
           <div className="flex items-center gap-2 mb-2">
             {renderStars(rating)}
-            <span className="text-sm text-gray-600">
+            <span className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
               {rating.toFixed(1)} ({reviewCount} reviews)
             </span>
           </div>
 
           {/* Price and Categories */}
-          <div className="flex items-center gap-2 mb-2 text-sm text-gray-600">
+          <div className="flex items-center gap-2 mb-2 text-sm" style={{ color: 'var(--color-text-secondary)' }}>
             {price && <span className="font-medium">{price}</span>}
             {price && categoryTitles && <span>•</span>}
             <span className="line-clamp-1">{categoryTitles}</span>
           </div>
 
           {/* Location */}
-          <div className="text-sm text-gray-500 mb-2">
+          <div className="text-sm mb-2" style={{ color: 'var(--color-muted)' }}>
             {city}, {state}
           </div>
 
           {/* AI Summary Snippet */}
           {aiSummary && (
-            <p className="text-sm text-gray-700 line-clamp-2 mt-2">
+            <p className="text-sm line-clamp-2 mt-2" style={{ color: 'var(--color-text-secondary)' }}>
               {aiSummary}
             </p>
           )}
 
-          {/* View Details Button */}
+          {/* View Details CTA - Styled as button but not actually a button to avoid blocking link */}
           <div className="mt-4">
-            <button className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+            <div className="w-full px-4 py-2.5 bg-[var(--color-primary)] text-white rounded-xl transition-[var(--transition-base)] font-medium shadow-sm text-center group-hover:bg-[var(--color-primary-dark)] group-hover:shadow-md">
               View Details →
-            </button>
+            </div>
           </div>
         </div>
       </div>

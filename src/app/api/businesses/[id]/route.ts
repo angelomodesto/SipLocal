@@ -1,23 +1,32 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseServerClient } from '@/lib/supabaseServer';
 
-interface Params {
-  params: { id: string };
-}
-
-export async function GET(_req: Request, { params }: Params) {
+export async function GET(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> | { id: string } }
+) {
   try {
+    // Handle Next.js 15 params which might be a Promise
+    const resolvedParams = await Promise.resolve(params);
+    const businessId = resolvedParams.id;
+
+    if (!businessId) {
+      return NextResponse.json({ success: false, error: 'Business ID is required' }, { status: 400 });
+    }
+
     const supabase = getSupabaseServerClient();
     const { data, error } = await supabase
       .from('businesses')
       .select('*')
-      .eq('id', params.id)
+      .eq('id', businessId)
       .single();
 
     if (error) {
+      console.error('Database error fetching business:', error);
       return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     }
     if (!data) {
+      console.error(`Business not found with ID: ${businessId}`);
       return NextResponse.json({ success: false, error: 'Not found' }, { status: 404 });
     }
 

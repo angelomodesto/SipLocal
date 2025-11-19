@@ -62,14 +62,19 @@ export default function Filters({ onFilterChange }: FiltersProps) {
   };
 
   return (
-    <div className="bg-white border-b border-gray-200 py-4">
+    <div className="bg-white border-b border-[var(--color-border-warm)] py-4">
       <div className="container mx-auto px-4">
-        <div className="flex flex-wrap gap-4 items-center">
+        <div className="flex flex-wrap gap-3 items-center">
           {/* City Filter */}
           <div className="flex items-center gap-2">
-            <label className="text-sm font-medium text-gray-700">City:</label>
+            <label className="text-sm font-medium" style={{ color: 'var(--color-muted)' }}>City:</label>
             <select
-              className="px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={filters.city || ''}
+              className="px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:border-[var(--color-primary)] transition-[var(--transition-base)] bg-white text-sm font-medium"
+              style={{ 
+                color: 'var(--color-text-primary)',
+                borderColor: 'var(--color-border-muted)',
+              }}
               onChange={(e) => updateFilter('city', e.target.value)}
             >
               {CITIES.map((city) => (
@@ -82,9 +87,14 @@ export default function Filters({ onFilterChange }: FiltersProps) {
 
           {/* Price Filter */}
           <div className="flex items-center gap-2">
-            <label className="text-sm font-medium text-gray-700">Price:</label>
+            <label className="text-sm font-medium" style={{ color: 'var(--color-muted)' }}>Price:</label>
             <select
-              className="px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={filters.price || ''}
+              className="px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:border-[var(--color-primary)] transition-[var(--transition-base)] bg-white text-sm font-medium"
+              style={{ 
+                color: 'var(--color-text-primary)',
+                borderColor: 'var(--color-border-muted)',
+              }}
               onChange={(e) => updateFilter('price', e.target.value)}
             >
               {PRICE_RANGES.map((price) => (
@@ -97,9 +107,14 @@ export default function Filters({ onFilterChange }: FiltersProps) {
 
           {/* Rating Filter */}
           <div className="flex items-center gap-2">
-            <label className="text-sm font-medium text-gray-700">Rating:</label>
+            <label className="text-sm font-medium" style={{ color: 'var(--color-muted)' }}>Rating:</label>
             <select
-              className="px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={filters.rating ?? ''}
+              className="px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:border-[var(--color-primary)] transition-[var(--transition-base)] bg-white text-sm font-medium"
+              style={{ 
+                color: 'var(--color-text-primary)',
+                borderColor: 'var(--color-border-muted)',
+              }}
               onChange={(e) => updateFilter('rating', e.target.value ? Number(e.target.value) : null)}
             >
               {RATING_FILTERS.map((filter) => (
@@ -112,9 +127,14 @@ export default function Filters({ onFilterChange }: FiltersProps) {
 
           {/* Category Filter */}
           <div className="flex items-center gap-2">
-            <label className="text-sm font-medium text-gray-700">Category:</label>
+            <label className="text-sm font-medium" style={{ color: 'var(--color-muted)' }}>Category:</label>
             <select
-              className="px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={filters.category || ''}
+              className="px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:border-[var(--color-primary)] transition-[var(--transition-base)] bg-white text-sm font-medium"
+              style={{ 
+                color: 'var(--color-text-primary)',
+                borderColor: 'var(--color-border-muted)',
+              }}
               onChange={(e) => updateFilter('category', e.target.value)}
             >
               {CATEGORIES.map((category) => (
@@ -125,6 +145,30 @@ export default function Filters({ onFilterChange }: FiltersProps) {
             </select>
           </div>
 
+          {/* Active Filters as Pills */}
+          <div className="flex flex-wrap gap-2 items-center ml-2">
+            {filters.city && (
+              <span className="px-3 py-1.5 bg-[var(--color-primary)] text-white rounded-full text-sm font-medium">
+                {filters.city}
+              </span>
+            )}
+            {filters.price && (
+              <span className="px-3 py-1.5 bg-[var(--color-primary)] text-white rounded-full text-sm font-medium">
+                {filters.price}
+              </span>
+            )}
+            {filters.rating && (
+              <span className="px-3 py-1.5 bg-[var(--color-primary)] text-white rounded-full text-sm font-medium">
+                {filters.rating}+ Stars
+              </span>
+            )}
+            {filters.category && (
+              <span className="px-3 py-1.5 bg-[var(--color-primary)] text-white rounded-full text-sm font-medium">
+                {filters.category}
+              </span>
+            )}
+          </div>
+
           {/* Clear Filters Button */}
           {(filters.city || filters.price || filters.rating || filters.category) && (
             <button
@@ -133,7 +177,7 @@ export default function Filters({ onFilterChange }: FiltersProps) {
                 setFilters(cleared);
                 onFilterChange?.(cleared);
               }}
-              className="px-4 py-1.5 text-sm text-blue-600 hover:text-blue-800 underline"
+              className="px-4 py-1.5 text-sm text-[var(--color-primary-dark)] hover:text-[var(--color-primary)] underline font-medium transition-[var(--transition-base)]"
             >
               Clear Filters
             </button>

@@ -43,14 +43,14 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ background: 'var(--background-warm)' }}>
       <Header />
       <main className="flex items-center justify-center px-4 py-12">
-        <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg border border-gray-200">
-          <h1 className="text-3xl font-bold mb-6 text-center text-gray-900">Login</h1>
+        <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg border border-[var(--color-border-warm)]">
+          <h1 className="text-3xl font-bold mb-6 text-center" style={{ color: 'var(--color-text-primary)' }}>Login</h1>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
               {error}
             </div>
           )}
@@ -58,10 +58,22 @@ export default function LoginPage() {
           <form className="flex flex-col gap-4" onSubmit={handleLogin}>
             {/* Email */}
             <label className="flex flex-col">
-              <span className="text-sm font-medium mb-1 text-gray-700">Email</span>
+              <span className="text-sm font-medium mb-1" style={{ color: 'var(--color-text-secondary)' }}>Email</span>
               <input
                 type="email"
-                className="border border-gray-300 rounded-lg p-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                className="border rounded-xl p-3 focus:outline-none focus:ring-2 focus:border-transparent transition-[var(--transition-base)]"
+                style={{ 
+                  borderColor: 'var(--color-border-muted)',
+                  color: 'var(--color-text-primary)',
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--color-primary)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px rgba(180, 84, 39, 0.1)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--color-border-muted)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 aria-label="Email address"
@@ -71,10 +83,22 @@ export default function LoginPage() {
 
             {/* Password */}
             <label className="flex flex-col">
-              <span className="text-sm font-medium mb-1 text-gray-700">Password</span>
+              <span className="text-sm font-medium mb-1" style={{ color: 'var(--color-text-secondary)' }}>Password</span>
               <input
                 type="password"
-                className="border border-gray-300 rounded-lg p-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                className="border rounded-xl p-3 focus:outline-none focus:ring-2 focus:border-transparent transition-[var(--transition-base)]"
+                style={{ 
+                  borderColor: 'var(--color-border-muted)',
+                  color: 'var(--color-text-primary)',
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--color-primary)';
+                  e.currentTarget.style.boxShadow = '0 0 0 2px rgba(180, 84, 39, 0.1)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--color-border-muted)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 aria-label="Password"
@@ -86,15 +110,15 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-[var(--color-primary)] text-white py-3 rounded-xl hover:bg-[var(--color-primary-dark)] transition-[var(--transition-base)] font-medium mt-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md"
             >
               {loading ? 'Logging in...' : 'Login'}
             </button>
           </form>
 
-          <p className="text-center text-sm mt-6 text-gray-600">
+          <p className="text-center text-sm mt-6" style={{ color: 'var(--color-text-secondary)' }}>
             Don't have an account?{' '}
-            <Link href="/auth/signup" className="text-blue-600 hover:text-blue-800 underline font-medium">
+            <Link href="/auth/signup" className="text-[var(--color-primary-dark)] hover:text-[var(--color-primary)] underline font-medium transition-[var(--transition-base)]">
               Sign up
             </Link>
           </p>
