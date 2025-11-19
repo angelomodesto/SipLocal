@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
+import HeroSection from '@/components/HeroSection';
 import Filters from '@/components/Filters';
 import BusinessCard from '@/components/BusinessCard';
 import type { FilterState } from '@/components/Filters';
@@ -51,6 +52,7 @@ export default function Home() {
   return (
     <div className="min-h-screen" style={{ background: 'var(--background-warm)' }}>
       <Header />
+      <HeroSection />
       <Filters onFilterChange={handleFilterChange} />
 
       {/* Main Content */}

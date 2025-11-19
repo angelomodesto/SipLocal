@@ -66,83 +66,135 @@ export default function Filters({ onFilterChange }: FiltersProps) {
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap gap-3 items-center">
           {/* City Filter */}
-          <div className="flex items-center gap-2">
-            <label className="text-sm font-medium" style={{ color: 'var(--color-muted)' }}>City:</label>
+          <div className="relative">
             <select
               value={filters.city || ''}
-              className="px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:border-[var(--color-primary)] transition-[var(--transition-base)] bg-white text-sm font-medium"
+              className="appearance-none px-5 py-2.5 pr-10 border rounded-full focus:outline-none focus:ring-2 focus:border-[var(--color-primary)] transition-[var(--transition-base)] text-sm font-medium cursor-pointer hover:shadow-md"
               style={{ 
-                color: 'var(--color-text-primary)',
-                borderColor: 'var(--color-border-muted)',
+                color: filters.city ? 'var(--color-text-primary)' : 'var(--color-muted)',
+                borderColor: filters.city ? 'var(--color-primary)' : 'var(--color-border-muted)',
+                background: filters.city ? 'var(--color-surface)' : 'white',
               }}
               onChange={(e) => updateFilter('city', e.target.value)}
             >
-              {CITIES.map((city) => (
-                <option key={city} value={city === 'All Cities' ? '' : city}>
+              <option value="" style={{ color: 'var(--color-muted)' }}>All Cities</option>
+              {CITIES.filter(city => city !== 'All Cities').map((city) => (
+                <option key={city} value={city} style={{ color: 'var(--color-text-primary)' }}>
                   {city}
                 </option>
               ))}
             </select>
+            {/* Custom dropdown arrow */}
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+              <svg
+                className="w-4 h-4"
+                style={{ color: 'var(--color-muted)' }}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
           </div>
 
           {/* Price Filter */}
-          <div className="flex items-center gap-2">
-            <label className="text-sm font-medium" style={{ color: 'var(--color-muted)' }}>Price:</label>
+          <div className="relative">
             <select
               value={filters.price || ''}
-              className="px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:border-[var(--color-primary)] transition-[var(--transition-base)] bg-white text-sm font-medium"
+              className="appearance-none px-5 py-2.5 pr-10 border rounded-full focus:outline-none focus:ring-2 focus:border-[var(--color-primary)] transition-[var(--transition-base)] text-sm font-medium cursor-pointer hover:shadow-md"
               style={{ 
-                color: 'var(--color-text-primary)',
-                borderColor: 'var(--color-border-muted)',
+                color: filters.price ? 'var(--color-text-primary)' : 'var(--color-muted)',
+                borderColor: filters.price ? 'var(--color-primary)' : 'var(--color-border-muted)',
+                background: filters.price ? 'var(--color-surface)' : 'white',
               }}
               onChange={(e) => updateFilter('price', e.target.value)}
             >
-              {PRICE_RANGES.map((price) => (
-                <option key={price} value={price === 'All Prices' ? '' : price}>
+              <option value="" style={{ color: 'var(--color-muted)' }}>All Prices</option>
+              {PRICE_RANGES.filter(price => price !== 'All Prices').map((price) => (
+                <option key={price} value={price} style={{ color: 'var(--color-text-primary)' }}>
                   {price}
                 </option>
               ))}
             </select>
+            {/* Custom dropdown arrow */}
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+              <svg
+                className="w-4 h-4"
+                style={{ color: 'var(--color-muted)' }}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
           </div>
 
           {/* Rating Filter */}
-          <div className="flex items-center gap-2">
-            <label className="text-sm font-medium" style={{ color: 'var(--color-muted)' }}>Rating:</label>
+          <div className="relative">
             <select
               value={filters.rating ?? ''}
-              className="px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:border-[var(--color-primary)] transition-[var(--transition-base)] bg-white text-sm font-medium"
+              className="appearance-none px-5 py-2.5 pr-10 border rounded-full focus:outline-none focus:ring-2 focus:border-[var(--color-primary)] transition-[var(--transition-base)] text-sm font-medium cursor-pointer hover:shadow-md"
               style={{ 
-                color: 'var(--color-text-primary)',
-                borderColor: 'var(--color-border-muted)',
+                color: filters.rating ? 'var(--color-text-primary)' : 'var(--color-muted)',
+                borderColor: filters.rating ? 'var(--color-primary)' : 'var(--color-border-muted)',
+                background: filters.rating ? 'var(--color-surface)' : 'white',
               }}
               onChange={(e) => updateFilter('rating', e.target.value ? Number(e.target.value) : null)}
             >
-              {RATING_FILTERS.map((filter) => (
-                <option key={filter.label} value={filter.value ?? ''}>
+              <option value="" style={{ color: 'var(--color-muted)' }}>All Ratings</option>
+              {RATING_FILTERS.filter(filter => filter.value !== null).map((filter) => (
+                <option key={filter.label} value={filter.value ?? ''} style={{ color: 'var(--color-text-primary)' }}>
                   {filter.label}
                 </option>
               ))}
             </select>
+            {/* Custom dropdown arrow */}
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+              <svg
+                className="w-4 h-4"
+                style={{ color: 'var(--color-muted)' }}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
           </div>
 
           {/* Category Filter */}
-          <div className="flex items-center gap-2">
-            <label className="text-sm font-medium" style={{ color: 'var(--color-muted)' }}>Category:</label>
+          <div className="relative">
             <select
               value={filters.category || ''}
-              className="px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:border-[var(--color-primary)] transition-[var(--transition-base)] bg-white text-sm font-medium"
+              className="appearance-none px-5 py-2.5 pr-10 border rounded-full focus:outline-none focus:ring-2 focus:border-[var(--color-primary)] transition-[var(--transition-base)] text-sm font-medium cursor-pointer hover:shadow-md"
               style={{ 
-                color: 'var(--color-text-primary)',
-                borderColor: 'var(--color-border-muted)',
+                color: filters.category ? 'var(--color-text-primary)' : 'var(--color-muted)',
+                borderColor: filters.category ? 'var(--color-primary)' : 'var(--color-border-muted)',
+                background: filters.category ? 'var(--color-surface)' : 'white',
               }}
               onChange={(e) => updateFilter('category', e.target.value)}
             >
-              {CATEGORIES.map((category) => (
-                <option key={category} value={category === 'All Categories' ? '' : category}>
+              <option value="" style={{ color: 'var(--color-muted)' }}>All Categories</option>
+              {CATEGORIES.filter(category => category !== 'All Categories').map((category) => (
+                <option key={category} value={category} style={{ color: 'var(--color-text-primary)' }}>
                   {category}
                 </option>
               ))}
             </select>
+            {/* Custom dropdown arrow */}
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+              <svg
+                className="w-4 h-4"
+                style={{ color: 'var(--color-muted)' }}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
           </div>
 
           {/* Active Filters as Pills */}
