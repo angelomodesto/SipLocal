@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface FiltersProps {
   onFilterChange?: (filters: FilterState) => void;
+  initialFilters?: FilterState;
 }
 
 export interface FilterState {
@@ -42,13 +43,22 @@ const CATEGORIES = [
   'Breakfast & Brunch',
 ];
 
-export default function Filters({ onFilterChange }: FiltersProps) {
-  const [filters, setFilters] = useState<FilterState>({
-    city: null,
-    price: null,
-    rating: null,
-    category: null,
-  });
+export default function Filters({ onFilterChange, initialFilters }: FiltersProps) {
+  const [filters, setFilters] = useState<FilterState>(
+    initialFilters || {
+      city: null,
+      price: null,
+      rating: null,
+      category: null,
+    }
+  );
+
+  // Sync filters with initialFilters when they change (e.g., from URL params)
+  useEffect(() => {
+    if (initialFilters) {
+      setFilters(initialFilters);
+    }
+  }, [initialFilters]);
 
   const updateFilter = (key: keyof FilterState, value: string | number | null) => {
     const newFilters = {

@@ -9,13 +9,24 @@ export async function GET(request: Request) {
     const rating = searchParams.get('rating');
     const category = searchParams.get('category');
     const limit = Number(searchParams.get('limit') ?? '60');
+    const top = searchParams.get('top') === 'true'; // For top cafes (homepage)
+    const search = searchParams.get('search'); // For text search
 
     const supabase = getSupabaseServerClient();
 
     let query = supabase
       .from('businesses')
-      .select('*')
-      .limit(limit);
+      .select('*');
+
+    // For top cafes, order by rating and review count, then limit
+    if (top) {
+      query = query
+        .order('rating', { ascending: false, nullsFirst: false })
+        .order('review_count', { ascending: false, nullsFirst: false })
+        .limit(12); // Show top 12 cafes on homepage
+    } else {
+      query = query.limit(limit);
+    }
 
     if (city) {
       query = query.eq('city', city);
@@ -30,6 +41,10 @@ export async function GET(request: Request) {
     if (category) {
       // categories is JSONB array of { alias, title }, match by title
       query = query.contains('categories', [{ title: category }]);
+    }
+    if (search) {
+      // Text search on name
+      query = query.ilike('name', `%${search}%`);
     }
 
     const { data, error } = await query;

@@ -10,20 +10,36 @@ export default function Header() {
             SipLocal
           </Link>
 
-          {/* User Menu */}
-          <div className="flex items-center gap-3">
-            <Link
-              href="/auth/login"
-              className="px-4 py-2 text-[var(--color-muted)] hover:text-[var(--color-primary-dark)] transition-[var(--transition-base)] font-medium"
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/auth/signup"
-              className="px-5 py-2 bg-[var(--color-primary)] text-white rounded-full hover:bg-[var(--color-primary-dark)] transition-[var(--transition-base)] font-medium shadow-sm hover:shadow-md"
-            >
-              Sign Up
-            </Link>
+          {/* Navigation & User Menu */}
+          <div className="flex items-center gap-4">
+            <nav className="hidden md:flex items-center gap-4">
+              <Link
+                href="/"
+                className="px-4 py-2 text-[var(--color-muted)] hover:text-[var(--color-primary-dark)] transition-[var(--transition-base)] font-medium"
+              >
+                Home
+              </Link>
+              <Link
+                href="/cafes"
+                className="px-4 py-2 text-[var(--color-muted)] hover:text-[var(--color-primary-dark)] transition-[var(--transition-base)] font-medium"
+              >
+                All Cafés
+              </Link>
+            </nav>
+            <div className="flex items-center gap-3">
+              <Link
+                href="/auth/login"
+                className="px-4 py-2 text-[var(--color-muted)] hover:text-[var(--color-primary-dark)] transition-[var(--transition-base)] font-medium"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/auth/signup"
+                className="px-5 py-2 bg-[var(--color-primary)] text-white rounded-full hover:bg-[var(--color-primary-dark)] transition-[var(--transition-base)] font-medium shadow-sm hover:shadow-md"
+              >
+                Sign Up
+              </Link>
+            </div>
           </div>
         </div>
       </div>
