@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
+import PinButton from '@/components/PinButton';
 
 type Business = {
   id: string;
@@ -279,7 +280,10 @@ export default function BusinessDetailPage() {
 
             {/* Business Name and Rating */}
             <div className="bg-white rounded-2xl border border-[var(--color-border-warm)] p-6 shadow-md">
-              <h1 className="text-4xl font-bold mb-4" style={{ color: 'var(--color-text-primary)' }}>{business.name}</h1>
+              <div className="flex items-start justify-between mb-4">
+                <h1 className="text-4xl font-bold" style={{ color: 'var(--color-text-primary)' }}>{business.name}</h1>
+                <PinButton businessId={business.id} businessName={business.name} />
+              </div>
               
               <div className="flex flex-wrap items-center gap-4 mb-4">
                 {renderStars(business.rating, 'lg')}

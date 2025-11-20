@@ -23,7 +23,7 @@ export async function GET(request: Request) {
       query = query
         .order('rating', { ascending: false, nullsFirst: false })
         .order('review_count', { ascending: false, nullsFirst: false })
-        .limit(12); // Show top 12 cafes on homepage
+        .limit(6); // Show top 6 cafes on homepage
     } else {
       query = query.limit(limit);
     }

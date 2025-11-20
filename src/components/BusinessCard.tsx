@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import PinButton from './PinButton';
 
 interface BusinessCardProps {
   id: string;
@@ -57,6 +58,14 @@ export default function BusinessCard({
       <div className="group bg-white rounded-2xl border border-[var(--color-border-warm)] overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-[var(--transition-smooth)] cursor-pointer" style={{ boxShadow: 'var(--shadow-md)' }}>
         {/* Image Section with Warm Overlay on Hover */}
         <div className="relative w-full h-48 bg-[var(--color-surface)] overflow-hidden">
+          {/* Pin Button - positioned absolutely */}
+          <div 
+            className="absolute top-2 right-2 z-20"
+            onClick={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            <PinButton businessId={id} businessName={name} />
+          </div>
           {imageUrl ? (
             <>
               <Image
