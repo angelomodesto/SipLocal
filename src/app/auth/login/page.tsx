@@ -1,13 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
 import { getSupabaseClient } from '@/lib/supabaseClient';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -31,8 +32,9 @@ export default function LoginPage() {
       }
 
       if (data.user) {
-        // Redirect to homepage on successful login
-        router.push('/');
+        // Redirect to the redirect URL or homepage
+        const redirect = searchParams.get('redirect');
+        router.push(redirect || '/');
         router.refresh();
       }
     } catch (err) {
@@ -116,12 +118,19 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p className="text-center text-sm mt-6" style={{ color: 'var(--color-text-secondary)' }}>
-            Don't have an account?{' '}
-            <Link href="/auth/signup" className="text-[var(--color-primary-dark)] hover:text-[var(--color-primary)] underline font-medium transition-[var(--transition-base)]">
-              Sign up
-            </Link>
-          </p>
+          <div className="text-center text-sm mt-6" style={{ color: 'var(--color-text-secondary)' }}>
+            <p className="mb-2">
+              Don't have an account?{' '}
+              <Link href="/auth/signup" className="text-[var(--color-primary-dark)] hover:text-[var(--color-primary)] underline font-medium transition-[var(--transition-base)]">
+                Sign up
+              </Link>
+            </p>
+            <p>
+              <Link href="/auth/forgot-password" className="text-[var(--color-primary-dark)] hover:text-[var(--color-primary)] underline font-medium transition-[var(--transition-base)]">
+                Forgot your password?
+              </Link>
+            </p>
+          </div>
         </div>
       </main>
     </div>

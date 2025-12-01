@@ -13,15 +13,49 @@ export default function Header() {
   useEffect(() => {
     const checkUser = async () => {
       const supabase = getSupabaseClient();
+      
+      // Get initial user
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
 
-      // Listen for auth changes
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      // Listen for auth changes and handle token refresh
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
         setUser(session?.user ?? null);
+        
+        // Handle token refresh
+        if (event === 'TOKEN_REFRESHED' && session) {
+          // Token was refreshed, user is still authenticated
+          console.log('Token refreshed successfully');
+        } else if (event === 'SIGNED_OUT') {
+          // User signed out, clear state
+          setUser(null);
+        }
       });
 
-      return () => subscription.unsubscribe();
+      // Set up automatic token refresh
+      const refreshInterval = setInterval(async () => {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session) {
+            // Refresh the session if it's close to expiring
+            const expiresAt = session.expires_at;
+            const now = Math.floor(Date.now() / 1000);
+            const timeUntilExpiry = expiresAt ? expiresAt - now : 0;
+            
+            // Refresh if token expires in less than 5 minutes
+            if (timeUntilExpiry < 300) {
+              await supabase.auth.refreshSession();
+            }
+          }
+        } catch (error) {
+          console.error('Error refreshing session:', error);
+        }
+      }, 60000); // Check every minute
+
+      return () => {
+        subscription.unsubscribe();
+        clearInterval(refreshInterval);
+      };
     };
 
     checkUser();
@@ -39,8 +73,17 @@ export default function Header() {
     <header className="bg-white border-b border-[var(--color-border-warm)] sticky top-0 z-50 shadow-sm">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo - Using display font (Righteous) with Merlot color */}
-          <Link href="/" className="text-4xl font-display" style={{ color: 'var(--color-primary-dark)' }}>
+          {/* Logo - Using Just Another Hand font with Merlot color */}
+          <Link 
+            href="/" 
+            className="text-5xl md:text-6xl font-logo" 
+            style={{ 
+              color: 'var(--color-primary-dark)',
+              fontFamily: '"Just Another Hand", cursive',
+              fontWeight: 400,
+              fontStyle: 'normal'
+            }}
+          >
             SipLocal
           </Link>
 
@@ -106,6 +149,14 @@ export default function Header() {
                             onClick={() => setShowMenu(false)}
                           >
                             My Pin Board
+                          </Link>
+                          <Link
+                            href="/profile"
+                            className="block px-4 py-2 text-sm hover:bg-[var(--color-surface)] transition-[var(--transition-base)]"
+                            style={{ color: 'var(--color-text-primary)' }}
+                            onClick={() => setShowMenu(false)}
+                          >
+                            My Profile
                           </Link>
                           <button
                             onClick={handleSignOut}

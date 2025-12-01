@@ -1,17 +1,24 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseServerClient } from '@/lib/supabaseServer';
+import { getAuthenticatedUser } from '@/lib/supabaseAuth';
 
 // Upload image to Supabase Storage
 export async function POST(request: Request) {
   try {
+    // Get authenticated user from JWT token
+    const user = await getAuthenticatedUser();
+    
+    if (!user) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    const userId = formData.get('user_id') as string;
     const businessId = formData.get('business_id') as string;
 
-    if (!file || !userId) {
+    if (!file) {
       return NextResponse.json(
-        { success: false, error: 'File and user_id are required' },
+        { success: false, error: 'File is required' },
         { status: 400 }
       );
     }
@@ -36,7 +43,7 @@ export async function POST(request: Request) {
 
     // Generate unique filename
     const fileExt = file.name.split('.').pop();
-    const fileName = `${userId}/${businessId || 'general'}/${Date.now()}.${fileExt}`;
+    const fileName = `${user.id}/${businessId || 'general'}/${Date.now()}.${fileExt}`;
 
     // Convert file to buffer
     const arrayBuffer = await file.arrayBuffer();

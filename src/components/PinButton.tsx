@@ -25,7 +25,13 @@ export default function PinButton({ businessId, businessName, className = '', on
       
       if (user) {
         // Check if business is already pinned
-        const res = await fetch(`/api/pins/check?business_id=${businessId}&user_id=${user.id}`);
+        const { data: { session } } = await supabase.auth.getSession();
+        const headers: HeadersInit = {};
+        if (session?.access_token) {
+          headers['Authorization'] = `Bearer ${session.access_token}`;
+        }
+        
+        const res = await fetch(`/api/pins/check?business_id=${businessId}`, { headers });
         const json = await res.json();
         if (json.success) {
           setIsPinned(json.isPinned);
@@ -46,15 +52,23 @@ export default function PinButton({ businessId, businessName, className = '', on
 
     setIsLoading(true);
     try {
+      const supabase = getSupabaseClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      const headers: HeadersInit = {};
+      if (session?.access_token) {
+        headers['Authorization'] = `Bearer ${session.access_token}`;
+      }
+      
       if (isPinned) {
         // Unpin - find the pin ID first
-        const pinsRes = await fetch(`/api/pins?user_id=${currentUser.id}`);
+        const pinsRes = await fetch(`/api/pins`, { headers });
         const pinsJson = await pinsRes.json();
         const pin = pinsJson.pins?.find((p: any) => p.businessId === businessId);
         
         if (pin) {
-          const res = await fetch(`/api/pins?pin_id=${pin.id}&user_id=${currentUser.id}`, {
+          const res = await fetch(`/api/pins?pin_id=${pin.id}`, {
             method: 'DELETE',
+            headers,
           });
           const json = await res.json();
           if (json.success) {
@@ -67,9 +81,11 @@ export default function PinButton({ businessId, businessName, className = '', on
         // Pin - default to 'want_to_try'
         const res = await fetch('/api/pins', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            ...headers,
+          },
           body: JSON.stringify({
-            user_id: currentUser.id,
             business_id: businessId,
             status: 'want_to_try',
           }),

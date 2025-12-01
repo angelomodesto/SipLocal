@@ -1,26 +1,20 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseServerClient } from '@/lib/supabaseServer';
-import { cookies } from 'next/headers';
+import { getAuthenticatedUser } from '@/lib/supabaseAuth';
 
 // GET - Fetch user's pins
 export async function GET(request: Request) {
   try {
-    const supabase = getSupabaseServerClient();
-    const cookieStore = await cookies();
+    // Get authenticated user from JWT token
+    const user = await getAuthenticatedUser();
     
-    // Get auth token from cookies
-    const token = cookieStore.get('sb-access-token')?.value;
-    
-    // For client-side requests, we'll need to pass the session
-    // This is a simplified version - in production, use proper session handling
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('user_id');
-    
-    if (!userId) {
-      return NextResponse.json({ success: false, error: 'User ID required' }, { status: 401 });
+    if (!user) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Fetch pins with business details
+    const supabase = getSupabaseServerClient();
+
+    // Fetch pins with business details for the authenticated user
     const { data: pins, error } = await supabase
       .from('user_pins')
       .select(`
@@ -38,7 +32,7 @@ export async function GET(request: Request) {
           state
         )
       `)
-      .eq('user_id', userId)
+      .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -81,13 +75,20 @@ export async function GET(request: Request) {
 // POST - Create a new pin
 export async function POST(request: Request) {
   try {
+    // Get authenticated user from JWT token
+    const user = await getAuthenticatedUser();
+    
+    if (!user) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
     const supabase = getSupabaseServerClient();
     const body = await request.json();
-    const { business_id, status, user_notes, user_image_url, user_id } = body;
+    const { business_id, status, user_notes, user_image_url } = body;
 
-    if (!user_id || !business_id) {
+    if (!business_id) {
       return NextResponse.json(
-        { success: false, error: 'user_id and business_id are required' },
+        { success: false, error: 'business_id is required' },
         { status: 400 }
       );
     }
@@ -96,7 +97,7 @@ export async function POST(request: Request) {
     const { data: existingPin } = await supabase
       .from('user_pins')
       .select('id')
-      .eq('user_id', user_id)
+      .eq('user_id', user.id)
       .eq('business_id', business_id)
       .single();
 
@@ -125,7 +126,7 @@ export async function POST(request: Request) {
     const { data, error } = await supabase
       .from('user_pins')
       .insert({
-        user_id,
+        user_id: user.id,
         business_id,
         status: status || 'want_to_try',
         user_notes: user_notes || null,
@@ -150,14 +151,20 @@ export async function POST(request: Request) {
 // DELETE - Remove a pin
 export async function DELETE(request: Request) {
   try {
+    // Get authenticated user from JWT token
+    const user = await getAuthenticatedUser();
+    
+    if (!user) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
     const supabase = getSupabaseServerClient();
     const { searchParams } = new URL(request.url);
     const pinId = searchParams.get('pin_id');
-    const userId = searchParams.get('user_id');
 
-    if (!pinId || !userId) {
+    if (!pinId) {
       return NextResponse.json(
-        { success: false, error: 'pin_id and user_id are required' },
+        { success: false, error: 'pin_id is required' },
         { status: 400 }
       );
     }
@@ -166,7 +173,7 @@ export async function DELETE(request: Request) {
       .from('user_pins')
       .delete()
       .eq('id', pinId)
-      .eq('user_id', userId); // Ensure user can only delete their own pins
+      .eq('user_id', user.id); // Ensure user can only delete their own pins
 
     if (error) {
       return NextResponse.json({ success: false, error: error.message }, { status: 500 });

@@ -59,7 +59,15 @@ export default function BoardPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/pins?user_id=${userId}`);
+      const supabase = getSupabaseClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      const headers: HeadersInit = {};
+      if (session?.access_token) {
+        headers['Authorization'] = `Bearer ${session.access_token}`;
+      }
+      
+      const res = await fetch(`/api/pins`, { headers });
       const json = await res.json();
       if (!json.success) {
         setError(json.error || 'Failed to load pins');
@@ -79,8 +87,17 @@ export default function BoardPage() {
     if (!currentUser) return;
     
     try {
-      const res = await fetch(`/api/pins?pin_id=${pinId}&user_id=${currentUser.id}`, {
+      const supabase = getSupabaseClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      const headers: HeadersInit = {};
+      if (session?.access_token) {
+        headers['Authorization'] = `Bearer ${session.access_token}`;
+      }
+      
+      const res = await fetch(`/api/pins?pin_id=${pinId}`, {
         method: 'DELETE',
+        headers,
       });
       const json = await res.json();
       if (json.success) {
