@@ -39,20 +39,100 @@ export default function BoardPage() {
   const [editingPin, setEditingPin] = useState<Pin | null>(null);
 
   useEffect(() => {
-    const checkAuthAndLoadPins = async () => {
-      const supabase = getSupabaseClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        router.push('/auth/login');
-        return;
-      }
+    const supabase = getSupabaseClient();
+    let mounted = true;
+    let hasInitialSession = false;
+    let redirectTimeout: NodeJS.Timeout | null = null;
 
-      setCurrentUser(user);
-      await loadPins(user.id);
+    // Listen for auth state changes FIRST - this fires when session is restored from localStorage
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!mounted) return;
+      
+      // INITIAL_SESSION fires when Supabase first loads the session from localStorage
+      if (event === 'INITIAL_SESSION') {
+        hasInitialSession = true;
+        if (session?.user) {
+          setCurrentUser(session.user);
+          loadPins(session.user.id);
+        } else {
+          // No session found, redirect to login after a short delay
+          redirectTimeout = setTimeout(() => {
+            if (mounted) {
+              router.push('/auth/login?redirect=/board');
+            }
+          }, 100);
+        }
+      } else if (event === 'SIGNED_IN' && session?.user) {
+        hasInitialSession = true;
+        if (redirectTimeout) {
+          clearTimeout(redirectTimeout);
+          redirectTimeout = null;
+        }
+        setCurrentUser(session.user);
+        loadPins(session.user.id);
+      } else if (event === 'SIGNED_OUT') {
+        hasInitialSession = true;
+        if (redirectTimeout) {
+          clearTimeout(redirectTimeout);
+          redirectTimeout = null;
+        }
+        setCurrentUser(null);
+        router.push('/auth/login?redirect=/board');
+      } else if (event === 'TOKEN_REFRESHED' && session?.user) {
+        setCurrentUser(session.user);
+      }
+    });
+
+    // Also check session immediately as a fallback
+    // This handles cases where the event might have already fired
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!mounted) return;
+      
+      if (session?.user && !hasInitialSession) {
+        hasInitialSession = true;
+        if (redirectTimeout) {
+          clearTimeout(redirectTimeout);
+          redirectTimeout = null;
+        }
+        setCurrentUser(session.user);
+        loadPins(session.user.id);
+      } else if (!session && !hasInitialSession) {
+        // Wait a bit for INITIAL_SESSION event, then check again
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
+        if (!mounted || hasInitialSession) return;
+        
+        const { data: { session: retrySession } } = await supabase.auth.getSession();
+        
+        if (!mounted || hasInitialSession) return;
+        
+        if (retrySession?.user) {
+          hasInitialSession = true;
+          if (redirectTimeout) {
+            clearTimeout(redirectTimeout);
+            redirectTimeout = null;
+          }
+          setCurrentUser(retrySession.user);
+          loadPins(retrySession.user.id);
+        } else if (!hasInitialSession) {
+          // Still no session after waiting, redirect
+          hasInitialSession = true;
+          router.push('/auth/login?redirect=/board');
+        }
+      }
     };
 
-    checkAuthAndLoadPins();
+    checkSession();
+
+    return () => {
+      mounted = false;
+      if (redirectTimeout) {
+        clearTimeout(redirectTimeout);
+      }
+      subscription.unsubscribe();
+    };
   }, [router]);
 
   const loadPins = async (userId: string) => {

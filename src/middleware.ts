@@ -1,30 +1,20 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { getAuthenticatedUserFromRequest } from './lib/supabaseAuth';
 
 /**
  * Middleware to protect routes that require authentication
+ * 
+ * IMPORTANT: Supabase stores sessions in localStorage by default, which middleware cannot access.
+ * Therefore, this middleware is disabled and we rely entirely on client-side auth checks
+ * in the page components themselves (board/page.tsx, profile/page.tsx).
+ * 
+ * If you need server-side route protection, you should use @supabase/ssr package
+ * which properly handles cookie-based sessions for Next.js.
  */
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-
-  // Protected routes that require authentication
-  const protectedRoutes = ['/board', '/profile'];
-  
-  // Check if the current path is a protected route
-  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
-
-  if (isProtectedRoute) {
-    const user = await getAuthenticatedUserFromRequest(request);
-    
-    if (!user) {
-      // Redirect to login if not authenticated
-      const loginUrl = new URL('/auth/login', request.url);
-      loginUrl.searchParams.set('redirect', pathname);
-      return NextResponse.redirect(loginUrl);
-    }
-  }
-
+  // Allow all requests through - client-side components handle auth checks
+  // This prevents middleware from incorrectly blocking authenticated users
+  // whose sessions are stored in localStorage
   return NextResponse.next();
 }
 

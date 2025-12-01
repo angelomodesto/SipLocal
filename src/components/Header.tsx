@@ -20,15 +20,19 @@ export default function Header() {
 
       // Listen for auth changes and handle token refresh
       const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+        // Always update user state based on session
         setUser(session?.user ?? null);
         
-        // Handle token refresh
+        // Handle different auth events
         if (event === 'TOKEN_REFRESHED' && session) {
           // Token was refreshed, user is still authenticated
           console.log('Token refreshed successfully');
         } else if (event === 'SIGNED_OUT') {
           // User signed out, clear state
           setUser(null);
+        } else if (event === 'SIGNED_IN' && session) {
+          // User signed in, ensure state is updated
+          setUser(session.user);
         }
       });
 
@@ -65,8 +69,8 @@ export default function Header() {
     const supabase = getSupabaseClient();
     await supabase.auth.signOut();
     setUser(null);
-    router.push('/');
-    router.refresh();
+    // Use window.location for a full page reload to clear all state
+    window.location.href = '/';
   };
 
   return (

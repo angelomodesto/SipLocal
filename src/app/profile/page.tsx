@@ -19,23 +19,22 @@ export default function ProfilePage() {
   const [avatarUrl, setAvatarUrl] = useState('');
 
   useEffect(() => {
-    const loadProfile = async () => {
-      const supabase = getSupabaseClient();
-      const { data: { user: currentUser }, error: userError } = await supabase.auth.getUser();
-      
-      if (userError || !currentUser) {
-        router.push('/auth/login?redirect=/profile');
-        return;
-      }
+    const supabase = getSupabaseClient();
+    let mounted = true;
 
-      setUser(currentUser);
+    const loadProfile = async (userToLoad: any) => {
+      if (!mounted || !userToLoad) return;
+
+      setUser(userToLoad);
 
       // Load profile data
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', currentUser.id)
+        .eq('id', userToLoad.id)
         .single();
+
+      if (!mounted) return;
 
       if (profileError && profileError.code !== 'PGRST116') {
         console.error('Error loading profile:', profileError);
@@ -46,13 +45,60 @@ export default function ProfilePage() {
         setAvatarUrl(profileData.avatar_url || '');
       } else {
         // Profile doesn't exist, create one
-        setFullName(currentUser.email?.split('@')[0] || '');
+        setFullName(userToLoad.email?.split('@')[0] || '');
       }
 
       setLoading(false);
     };
 
-    loadProfile();
+    const checkAuthAndLoadProfile = async () => {
+      // Wait a bit for localStorage to be read (Supabase needs time to restore session)
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      if (!mounted) return;
+
+      // Get session first (reads from localStorage)
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      let currentUser = session?.user;
+      
+      if (!currentUser) {
+        // If no session, try getUser (makes a network call to verify)
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        
+        if (!mounted) return;
+        
+        if (userError || !user) {
+          router.push('/auth/login?redirect=/profile');
+          return;
+        }
+        
+        currentUser = user;
+      }
+
+      await loadProfile(currentUser);
+    };
+
+    // Also listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!mounted) return;
+      
+      if (event === 'SIGNED_OUT') {
+        setUser(null);
+        router.push('/auth/login?redirect=/profile');
+      } else if (event === 'SIGNED_IN' && session?.user) {
+        loadProfile(session.user);
+      } else if (event === 'TOKEN_REFRESHED' && session?.user) {
+        setUser(session.user);
+      }
+    });
+
+    checkAuthAndLoadProfile();
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, [router]);
 
   const handleSave = async (e: React.FormEvent) => {
