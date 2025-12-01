@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import PinButton from '@/components/PinButton';
+import YelpReviewCard from '@/components/YelpReviewCard';
 
 type Business = {
   id: string;
@@ -29,6 +30,10 @@ export default function BusinessDetailPage() {
   const [business, setBusiness] = useState<Business | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [yelpReviews, setYelpReviews] = useState<any[]>([]);
+  const [userReviews, setUserReviews] = useState<any[]>([]);
+  const [loadingReviews, setLoadingReviews] = useState(false);
+  const [refreshingYelp, setRefreshingYelp] = useState(false);
 
   useEffect(() => {
     const fetchBusiness = async () => {
@@ -60,6 +65,81 @@ export default function BusinessDetailPage() {
     };
     fetchBusiness();
   }, [businessId]);
+
+  // Fetch reviews and auto-sync Yelp reviews if needed
+  useEffect(() => {
+    const fetchReviews = async () => {
+      if (!businessId) return;
+
+      setLoadingReviews(true);
+      try {
+        // Check Yelp review sync status first
+        const syncStatusRes = await fetch(`/api/reviews/yelp/sync?businessId=${encodeURIComponent(businessId)}`);
+        const syncStatusData = await syncStatusRes.json();
+        
+        // Auto-sync if reviews are missing or expired
+        if (syncStatusData.success && syncStatusData.needsSync) {
+          try {
+            const syncRes = await fetch(`/api/reviews/yelp/sync?businessId=${encodeURIComponent(businessId)}`, {
+              method: 'POST',
+            });
+            const syncData = await syncRes.json();
+            if (syncData.success) {
+              console.log(`Synced ${syncData.synced} Yelp reviews`);
+            }
+          } catch (syncError) {
+            console.error('Error auto-syncing Yelp reviews:', syncError);
+            // Continue to fetch reviews even if sync fails
+          }
+        }
+
+        // Fetch Yelp reviews
+        const yelpRes = await fetch(`/api/reviews?businessId=${encodeURIComponent(businessId)}&source=yelp`);
+        const yelpData = await yelpRes.json();
+        if (yelpData.success) {
+          setYelpReviews(yelpData.reviews || []);
+        }
+
+        // Fetch user reviews
+        const userRes = await fetch(`/api/reviews?businessId=${encodeURIComponent(businessId)}&source=user`);
+        const userData = await userRes.json();
+        if (userData.success) {
+          setUserReviews(userData.reviews || []);
+        }
+      } catch (e) {
+        console.error('Error fetching reviews:', e);
+      } finally {
+        setLoadingReviews(false);
+      }
+    };
+
+    fetchReviews();
+  }, [businessId]);
+
+  // Manual refresh Yelp reviews (optional - for force refresh)
+  const handleRefreshYelpReviews = async () => {
+    if (!businessId) return;
+
+    setRefreshingYelp(true);
+    try {
+      const res = await fetch(`/api/reviews/yelp/sync?businessId=${encodeURIComponent(businessId)}`, {
+        method: 'POST',
+      });
+      const data = await res.json();
+      if (data.success) {
+        // Refresh Yelp reviews
+        const yelpRes = await fetch(`/api/reviews?businessId=${encodeURIComponent(businessId)}&source=yelp`);
+        const yelpData = await yelpRes.json();
+        if (yelpData.success) {
+          setYelpReviews(yelpData.reviews || []);
+        }
+      }
+    } catch (e) {
+      console.error('Error refreshing Yelp reviews:', e);
+    } finally {
+      setRefreshingYelp(false);
+    }
+  };
 
   // If business not found, show 404
   if (!loading && (!business || error)) {
@@ -138,7 +218,7 @@ export default function BusinessDetailPage() {
       try {
         await navigator.share({
           title: business.name,
-          text: business.aiSummary,
+          text: business.aiSummary || undefined,
           url: window.location.href,
         });
       } catch (err) {
@@ -242,10 +322,6 @@ export default function BusinessDetailPage() {
                           e.currentTarget.style.borderColor = 'transparent';
                         }
                       }}
-                      style={{
-                        borderColor: selectedImageIndex === index ? 'var(--color-primary)' : 'transparent',
-                        boxShadow: selectedImageIndex === index ? 'var(--shadow-sm)' : 'none',
-                      }}
                     >
                       {image ? (
                         <Image
@@ -341,27 +417,144 @@ export default function BusinessDetailPage() {
               <p className="leading-relaxed text-lg" style={{ color: 'var(--color-text-secondary)' }}>{business.aiSummary}</p>
             </div>
 
-            {/* Reviews Placeholder */}
+            {/* Reviews Section */}
             <div className="bg-white rounded-2xl border border-[var(--color-border-warm)] p-6 shadow-md">
-              <h2 className="text-2xl font-semibold mb-4" style={{ color: 'var(--color-text-primary)' }}>Reviews</h2>
-              <div className="text-center py-12 border-2 border-dashed rounded-xl" style={{ borderColor: 'var(--color-border-warm)' }}>
-                <svg
-                  className="w-16 h-16 mx-auto mb-4"
-                  style={{ color: 'var(--color-muted)' }}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
-                  />
-                </svg>
-                <p className="text-lg font-medium" style={{ color: 'var(--color-text-secondary)' }}>Reviews Coming Soon</p>
-                <p className="mt-2" style={{ color: 'var(--color-muted)' }}>Check back later for customer reviews and ratings</p>
-              </div>
+              <h2 className="text-2xl font-semibold mb-6" style={{ color: 'var(--color-text-primary)' }}>Reviews</h2>
+
+              {loadingReviews ? (
+                <div className="text-center py-8" style={{ color: 'var(--color-text-secondary)' }}>
+                  Loading reviews...
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {/* Yelp Reviews Section */}
+                  {yelpReviews.length > 0 && (
+                    <div>
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-lg font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+                            Reviews from Yelp
+                          </h3>
+                          <span className="text-sm" style={{ color: 'var(--color-muted)' }}>
+                            ({yelpReviews.length})
+                          </span>
+                        </div>
+                        <button
+                          onClick={handleRefreshYelpReviews}
+                          disabled={refreshingYelp}
+                          className="text-xs px-3 py-1.5 rounded-lg transition-[var(--transition-base)] disabled:opacity-50"
+                          style={{
+                            background: 'var(--color-surface)',
+                            color: 'var(--color-primary)',
+                          }}
+                          title="Refresh Yelp reviews"
+                        >
+                          {refreshingYelp ? 'Refreshing...' : '🔄 Refresh'}
+                        </button>
+                      </div>
+                      <div className="mb-4 text-sm" style={{ color: 'var(--color-text-secondary)' }}>
+                        These reviews are from Yelp and are updated daily. Reviews are provided by Yelp and link back to the original review.
+                      </div>
+                      <div className="space-y-4">
+                        {yelpReviews.map((review) => (
+                          <YelpReviewCard key={review.id} review={review} />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* User Reviews Section */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-4">
+                      <h3 className="text-lg font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+                        User Reviews
+                      </h3>
+                      <span className="text-sm" style={{ color: 'var(--color-muted)' }}>
+                        ({userReviews.length})
+                      </span>
+                    </div>
+                    {userReviews.length > 0 ? (
+                      <div className="space-y-4">
+                        {userReviews.map((review) => (
+                          <div
+                            key={review.id}
+                            className="bg-[var(--color-surface)] rounded-xl border border-[var(--color-border-warm)] p-4"
+                          >
+                            <div className="flex items-center gap-3 mb-2">
+                              {review.profiles?.avatar_url ? (
+                                <Image
+                                  src={review.profiles.avatar_url}
+                                  alt={review.profiles.full_name || 'User'}
+                                  width={40}
+                                  height={40}
+                                  className="rounded-full"
+                                />
+                              ) : (
+                                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                  <span className="text-gray-500 text-sm">
+                                    {(review.profiles?.full_name || review.profiles?.email || 'U').charAt(0).toUpperCase()}
+                                  </span>
+                                </div>
+                              )}
+                              <div>
+                                <div className="font-medium text-sm" style={{ color: 'var(--color-text-primary)' }}>
+                                  {review.profiles?.full_name || review.profiles?.email || 'Anonymous'}
+                                </div>
+                                <div className="text-xs" style={{ color: 'var(--color-muted)' }}>
+                                  {new Date(review.created_at).toLocaleDateString()}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2 mb-2">
+                              {renderStars(review.rating, 'sm')}
+                            </div>
+                            {review.title && (
+                              <h4 className="font-semibold mb-1" style={{ color: 'var(--color-text-primary)' }}>
+                                {review.title}
+                              </h4>
+                            )}
+                            <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
+                              {review.content}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 border-2 border-dashed rounded-xl" style={{ borderColor: 'var(--color-border-warm)' }}>
+                        <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
+                          No user reviews yet. Be the first to review!
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Empty State - No reviews at all */}
+                  {yelpReviews.length === 0 && userReviews.length === 0 && !loadingReviews && (
+                    <div className="text-center py-12 border-2 border-dashed rounded-xl" style={{ borderColor: 'var(--color-border-warm)' }}>
+                      <svg
+                        className="w-16 h-16 mx-auto mb-4"
+                        style={{ color: 'var(--color-muted)' }}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+                        />
+                      </svg>
+                      <p className="text-lg font-medium mb-2" style={{ color: 'var(--color-text-secondary)' }}>
+                        No reviews yet
+                      </p>
+                      <p className="text-sm" style={{ color: 'var(--color-muted)' }}>
+                        Yelp reviews are automatically synced when available
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 

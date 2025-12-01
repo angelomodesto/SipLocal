@@ -180,3 +180,51 @@ export async function getYelpBusinessDetails(businessId: string): Promise<YelpBu
   };
 }
 
+// Yelp Review interfaces
+export interface YelpReview {
+  id: string;
+  rating: number;
+  text: string;
+  time_created: string;
+  user: {
+    id: string;
+    profile_url: string;
+    image_url: string | null;
+    name: string;
+  };
+  url: string;
+}
+
+export interface YelpReviewsResponse {
+  reviews: YelpReview[];
+  total: number;
+}
+
+/**
+ * Fetch reviews for a Yelp business
+ * Returns up to 3 reviews per business (Yelp API limitation)
+ */
+export async function getYelpBusinessReviews(businessId: string): Promise<YelpReview[]> {
+  const apiKey = process.env.YELP_API_KEY;
+  
+  if (!apiKey) {
+    throw new Error('YELP_API_KEY environment variable is not set');
+  }
+
+  const response = await fetch(`${YELP_API_BASE}/businesses/${businessId}/reviews`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Accept': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Yelp API error: ${response.status} - ${errorText}`);
+  }
+
+  const data: YelpReviewsResponse = await response.json();
+  return data.reviews || [];
+}
+
