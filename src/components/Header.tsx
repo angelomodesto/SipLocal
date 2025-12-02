@@ -83,9 +83,6 @@ export default function Header() {
             className="text-5xl md:text-6xl font-logo" 
             style={{ 
               color: 'var(--color-primary-dark)',
-              fontFamily: '"Just Another Hand", cursive',
-              fontWeight: 400,
-              fontStyle: 'normal'
             }}
           >
             SipLocal

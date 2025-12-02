@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Just+Another+Hand&display=swap');
 @import "tailwindcss";
 
 /* Design Tokens - Coffee-Themed Color Palette */
@@ -73,7 +72,7 @@ body {
 }
 
 .font-logo {
-  font-family: "Just Another Hand", cursive !important;
+  font-family: var(--font-logo), "Just Another Hand", cursive !important;
   font-weight: 400 !important;
   font-style: normal !important;
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Rubik } from "next/font/google";
+import { Just_Another_Hand } from "next/font/google";
 import "./globals.css";
 
 // Primary UI / Body Font: Rubik
@@ -7,6 +8,13 @@ const rubik = Rubik({
   variable: "--font-rubik",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
+});
+
+// Logo Font: Just Another Hand
+const justAnotherHand = Just_Another_Hand({
+  variable: "--font-logo",
+  subsets: ["latin"],
+  weight: ["400"],
 });
 
 export const metadata: Metadata = {
@@ -26,7 +34,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body
-        className={`${rubik.variable} antialiased`}
+        className={`${rubik.variable} ${justAnotherHand.variable} antialiased`}
       >
         {children}
       </body>
