@@ -3,11 +3,11 @@ import { getSupabaseServerClient } from '@/lib/supabaseServer';
 
 export async function GET(
   _req: Request,
-  { params }: { params: Promise<{ id: string }> | { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Handle Next.js 15 params which might be a Promise
-    const resolvedParams = await Promise.resolve(params);
+    // Next.js 15 params are always a Promise
+    const resolvedParams = await params;
     const businessId = resolvedParams.id;
 
     if (!businessId) {

@@ -8,10 +8,11 @@ import { createServerClient } from '@/lib/supabaseAuth';
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> | { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const resolvedParams = await Promise.resolve(params);
+    // Next.js 15 params are always a Promise
+    const resolvedParams = await params;
     const reviewId = resolvedParams.id;
 
     if (!reviewId) {
@@ -145,10 +146,11 @@ export async function PATCH(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> | { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const resolvedParams = await Promise.resolve(params);
+    // Next.js 15 params are always a Promise
+    const resolvedParams = await params;
     const reviewId = resolvedParams.id;
 
     if (!reviewId) {
