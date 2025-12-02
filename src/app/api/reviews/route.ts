@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseServerClient } from '@/lib/supabaseServer';
+import { createServerClient } from '@/lib/supabaseAuth';
 
 /**
  * GET /api/reviews?businessId={id}&source={user|yelp|all}&sort={newest|oldest|highest|lowest|helpful}&limit={n}&offset={n}
@@ -151,7 +152,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = getSupabaseServerClient();
+    // Use createServerClient which reads auth from request headers/cookies
+    const supabase = await createServerClient();
 
     // Get authenticated user
     const { data: { user }, error: authError } = await supabase.auth.getUser();

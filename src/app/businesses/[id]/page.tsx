@@ -7,6 +7,10 @@ import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import PinButton from '@/components/PinButton';
 import YelpReviewCard from '@/components/YelpReviewCard';
+import UserReviewCard from '@/components/UserReviewCard';
+import WriteReviewModal from '@/components/WriteReviewModal';
+import { getSupabaseClient } from '@/lib/supabaseClient';
+import { authenticatedFetch } from '@/lib/apiClient';
 
 type Business = {
   id: string;
@@ -34,6 +38,9 @@ export default function BusinessDetailPage() {
   const [userReviews, setUserReviews] = useState<any[]>([]);
   const [loadingReviews, setLoadingReviews] = useState(false);
   const [refreshingYelp, setRefreshingYelp] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [showWriteModal, setShowWriteModal] = useState(false);
+  const [editingReview, setEditingReview] = useState<any>(null);
 
   useEffect(() => {
     const fetchBusiness = async () => {
@@ -66,6 +73,26 @@ export default function BusinessDetailPage() {
     fetchBusiness();
   }, [businessId]);
 
+  // Check authentication
+  useEffect(() => {
+    const checkAuth = async () => {
+      const supabase = getSupabaseClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      setCurrentUser(user);
+
+      // Listen for auth changes
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        setCurrentUser(session?.user ?? null);
+      });
+
+      return () => {
+        subscription.unsubscribe();
+      };
+    };
+
+    checkAuth();
+  }, []);
+
   // Fetch reviews and auto-sync Yelp reviews if needed
   useEffect(() => {
     const fetchReviews = async () => {
@@ -94,14 +121,18 @@ export default function BusinessDetailPage() {
         }
 
         // Fetch Yelp reviews
-        const yelpRes = await fetch(`/api/reviews?businessId=${encodeURIComponent(businessId)}&source=yelp`);
+        const yelpRes = await fetch(`/api/reviews?businessId=${encodeURIComponent(businessId)}&source=yelp`, {
+          cache: 'no-store',
+        });
         const yelpData = await yelpRes.json();
         if (yelpData.success) {
           setYelpReviews(yelpData.reviews || []);
         }
 
         // Fetch user reviews
-        const userRes = await fetch(`/api/reviews?businessId=${encodeURIComponent(businessId)}&source=user`);
+        const userRes = await fetch(`/api/reviews?businessId=${encodeURIComponent(businessId)}&source=user&sort=newest`, {
+          cache: 'no-store',
+        });
         const userData = await userRes.json();
         if (userData.success) {
           setUserReviews(userData.reviews || []);
@@ -140,6 +171,58 @@ export default function BusinessDetailPage() {
       setRefreshingYelp(false);
     }
   };
+
+  // Refresh reviews after write/edit/delete
+  const refreshReviews = async () => {
+    if (!businessId) return;
+
+    try {
+      // Small delay to ensure database commit is complete
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      // Fetch user reviews
+      const userRes = await fetch(`/api/reviews?businessId=${encodeURIComponent(businessId)}&source=user&sort=newest`, {
+        cache: 'no-store',
+      });
+      const userData = await userRes.json();
+      if (userData.success) {
+        setUserReviews(userData.reviews || []);
+      } else {
+        console.error('Failed to refresh reviews:', userData.error);
+      }
+    } catch (e) {
+      console.error('Error refreshing reviews:', e);
+    }
+  };
+
+  // Handle edit review
+  const handleEditReview = (review: any) => {
+    setEditingReview(review);
+    setShowWriteModal(true);
+  };
+
+  // Handle delete review
+  const handleDeleteReview = async (reviewId: string) => {
+    try {
+      const res = await authenticatedFetch(`/api/reviews/${reviewId}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (data.success) {
+        await refreshReviews();
+      } else {
+        alert(data.error || 'Failed to delete review');
+      }
+    } catch (e) {
+      console.error('Error deleting review:', e);
+      alert('An error occurred while deleting the review');
+    }
+  };
+
+  // Check if user has already reviewed
+  const hasUserReviewed = userReviews.some(
+    (review) => review.profiles?.id === currentUser?.id
+  );
 
   // If business not found, show 404
   if (!loading && (!business || error)) {
@@ -419,7 +502,20 @@ export default function BusinessDetailPage() {
 
             {/* Reviews Section */}
             <div className="bg-white rounded-2xl border border-[var(--color-border-warm)] p-6 shadow-md">
-              <h2 className="text-2xl font-semibold mb-6" style={{ color: 'var(--color-text-primary)' }}>Reviews</h2>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-semibold" style={{ color: 'var(--color-text-primary)' }}>Reviews</h2>
+                {currentUser && !hasUserReviewed && (
+                  <button
+                    onClick={() => {
+                      setEditingReview(null);
+                      setShowWriteModal(true);
+                    }}
+                    className="px-6 py-3 bg-[var(--color-primary)] text-white rounded-xl hover:bg-[var(--color-primary-dark)] transition-[var(--transition-base)] font-medium shadow-sm hover:shadow-md"
+                  >
+                    Write a Review
+                  </button>
+                )}
+              </div>
 
               {loadingReviews ? (
                 <div className="text-center py-8" style={{ color: 'var(--color-text-secondary)' }}>
@@ -476,54 +572,39 @@ export default function BusinessDetailPage() {
                     {userReviews.length > 0 ? (
                       <div className="space-y-4">
                         {userReviews.map((review) => (
-                          <div
+                          <UserReviewCard
                             key={review.id}
-                            className="bg-[var(--color-surface)] rounded-xl border border-[var(--color-border-warm)] p-4"
-                          >
-                            <div className="flex items-center gap-3 mb-2">
-                              {review.profiles?.avatar_url ? (
-                                <Image
-                                  src={review.profiles.avatar_url}
-                                  alt={review.profiles.full_name || 'User'}
-                                  width={40}
-                                  height={40}
-                                  className="rounded-full"
-                                />
-                              ) : (
-                                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                  <span className="text-gray-500 text-sm">
-                                    {(review.profiles?.full_name || review.profiles?.email || 'U').charAt(0).toUpperCase()}
-                                  </span>
-                                </div>
-                              )}
-                              <div>
-                                <div className="font-medium text-sm" style={{ color: 'var(--color-text-primary)' }}>
-                                  {review.profiles?.full_name || review.profiles?.email || 'Anonymous'}
-                                </div>
-                                <div className="text-xs" style={{ color: 'var(--color-muted)' }}>
-                                  {new Date(review.created_at).toLocaleDateString()}
-                                </div>
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-2 mb-2">
-                              {renderStars(review.rating, 'sm')}
-                            </div>
-                            {review.title && (
-                              <h4 className="font-semibold mb-1" style={{ color: 'var(--color-text-primary)' }}>
-                                {review.title}
-                              </h4>
-                            )}
-                            <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-                              {review.content}
-                            </p>
-                          </div>
+                            review={review}
+                            currentUserId={currentUser?.id}
+                            onEdit={handleEditReview}
+                            onDelete={handleDeleteReview}
+                          />
                         ))}
                       </div>
                     ) : (
                       <div className="text-center py-8 border-2 border-dashed rounded-xl" style={{ borderColor: 'var(--color-border-warm)' }}>
-                        <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-                          No user reviews yet. Be the first to review!
+                        <p className="text-sm mb-2" style={{ color: 'var(--color-text-secondary)' }}>
+                          No user reviews yet.
                         </p>
+                        {currentUser && !hasUserReviewed && (
+                          <button
+                            onClick={() => {
+                              setEditingReview(null);
+                              setShowWriteModal(true);
+                            }}
+                            className="mt-2 px-4 py-2 text-sm bg-[var(--color-primary)] text-white rounded-xl hover:bg-[var(--color-primary-dark)] transition-[var(--transition-base)]"
+                          >
+                            Be the first to review!
+                          </button>
+                        )}
+                        {!currentUser && (
+                          <p className="text-xs mt-2" style={{ color: 'var(--color-muted)' }}>
+                            <Link href={`/auth/login?redirect=/businesses/${encodeURIComponent(businessId)}`} className="underline">
+                              Sign in
+                            </Link>
+                            {' '}to write a review
+                          </p>
+                        )}
                       </div>
                     )}
                   </div>
@@ -714,6 +795,21 @@ export default function BusinessDetailPage() {
           </div>
         </div>
       </main>
+
+      {/* Write Review Modal */}
+      {business && (
+        <WriteReviewModal
+          isOpen={showWriteModal}
+          onClose={() => {
+            setShowWriteModal(false);
+            setEditingReview(null);
+          }}
+          businessId={business.id}
+          businessName={business.name}
+          existingReview={editingReview}
+          onSuccess={refreshReviews}
+        />
+      )}
     </div>
   );
 }

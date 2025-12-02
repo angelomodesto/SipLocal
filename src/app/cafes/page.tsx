@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
 import Filters from '@/components/Filters';
 import BusinessCard from '@/components/BusinessCard';
 import type { FilterState } from '@/components/Filters';
 
-export default function CafesPage() {
+function CafesContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [filteredBusinesses, setFilteredBusinesses] = useState<any[]>([]);
@@ -118,9 +118,7 @@ export default function CafesPage() {
   }, [currentSearch]);
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--background-warm)' }}>
-      <Header />
-      
+    <>
       {/* Page Header */}
       <section className="bg-white border-b border-[var(--color-border-warm)] py-8">
         <div className="container mx-auto px-4">
@@ -266,6 +264,21 @@ export default function CafesPage() {
           </div>
         </div>
       </footer>
+    </>
+  );
+}
+
+export default function CafesPage() {
+  return (
+    <div className="min-h-screen" style={{ background: 'var(--background-warm)' }}>
+      <Header />
+      <Suspense fallback={
+        <div className="container mx-auto px-4 py-12">
+          <div className="text-center" style={{ color: 'var(--color-text-secondary)' }}>Loading...</div>
+        </div>
+      }>
+        <CafesContent />
+      </Suspense>
     </div>
   );
 }
