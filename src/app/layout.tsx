@@ -23,11 +23,13 @@ export const metadata: Metadata = {
   description: "Find the best coffee shops and cafes in the Rio Grande Valley, South Texas. Browse ratings, reviews, and AI-generated summaries.",
   icons: {
     icon: [
-      { url: '/logo.png', sizes: 'any' },
-      { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
+      { url: '/logo.png', sizes: 'any', type: 'image/png' },
     ],
     apple: [
       { url: '/logo.png', sizes: '180x180', type: 'image/png' },
+    ],
+    shortcut: [
+      { url: '/logo.png', type: 'image/png' },
     ],
   },
   openGraph: {
