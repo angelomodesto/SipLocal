@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { getSupabaseClient } from '@/lib/supabaseClient';
 
@@ -77,15 +78,27 @@ export default function Header() {
     <header className="bg-white border-b border-[var(--color-border-warm)] sticky top-0 z-50 shadow-sm">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo - Using Just Another Hand font with Merlot color */}
+          {/* Logo - Coffee cup icon with text */}
           <Link 
             href="/" 
-            className="text-5xl md:text-6xl font-logo" 
-            style={{ 
-              color: 'var(--color-primary-dark)',
-            }}
+            className="flex items-center gap-3 hover:opacity-80 transition-[var(--transition-base)]"
           >
-            SipLocal
+            <Image
+              src="/logo.png"
+              alt="SipLocal Logo"
+              width={80}
+              height={80}
+              className="w-16 h-16 md:w-20 md:h-20"
+              priority
+            />
+            <span 
+              className="text-5xl md:text-6xl font-logo"
+              style={{ 
+                color: 'var(--color-primary-dark)',
+              }}
+            >
+              SipLocal
+            </span>
           </Link>
 
           {/* Navigation & User Menu */}
