@@ -65,7 +65,20 @@ export default function Home() {
           </div>
           <Link
             href="/cafes"
-            className="px-6 py-3 bg-[var(--color-primary)] text-white rounded-full hover:bg-[var(--color-primary-dark)] transition-[var(--transition-base)] font-medium shadow-sm hover:shadow-md"
+            className="px-6 py-3 bg-[var(--color-primary)] text-white rounded-full transition-all duration-200 font-medium shadow-sm hover:shadow-lg"
+            style={{
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#c2410c';
+              e.currentTarget.style.transform = 'scale(1.05)';
+              e.currentTarget.style.fontWeight = '700';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+              e.currentTarget.style.transform = 'scale(1)';
+              e.currentTarget.style.fontWeight = '500';
+            }}
           >
             View All Cafés →
           </Link>
@@ -96,7 +109,20 @@ export default function Home() {
             <p className="text-lg" style={{ color: 'var(--color-text-secondary)' }}>No cafés found.</p>
             <Link
               href="/cafes"
-              className="mt-4 inline-block px-6 py-3 bg-[var(--color-primary)] text-white rounded-full hover:bg-[var(--color-primary-dark)] transition-[var(--transition-base)] font-medium"
+              className="mt-4 inline-block px-6 py-3 bg-[var(--color-primary)] text-white rounded-full transition-all duration-200 font-medium"
+              style={{
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#c2410c';
+                e.currentTarget.style.transform = 'scale(1.05)';
+                e.currentTarget.style.fontWeight = '700';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.fontWeight = '500';
+              }}
             >
               Browse All Cafés
             </Link>
@@ -114,7 +140,22 @@ export default function Home() {
             </p>
             <Link
               href="/cafes"
-              className="inline-block px-8 py-4 bg-[var(--color-primary)] text-white rounded-full hover:bg-[var(--color-primary-dark)] transition-[var(--transition-base)] font-medium shadow-sm hover:shadow-md text-lg"
+              className="inline-block px-8 py-4 bg-[var(--color-primary)] text-white rounded-full transition-all duration-200 font-medium shadow-sm text-lg"
+              style={{
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#c2410c';
+                e.currentTarget.style.transform = 'scale(1.05)';
+                e.currentTarget.style.fontWeight = '700';
+                e.currentTarget.style.boxShadow = '0 10px 25px rgba(180, 84, 39, 0.4)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--color-primary)';
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.fontWeight = '500';
+                e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
+              }}
             >
               Browse All Cafés
             </Link>
